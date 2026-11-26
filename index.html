@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Coach Studio - Accedi</title>
+  <link rel="stylesheet" href="css/base.css">
+</head>
+<body class="pagina-accesso">
+  <main class="card blueprint box-accesso">
+    <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+    <span class="kicker">Coach Studio</span>
+
+    <p id="messaggio" class="avviso" role="status" hidden></p>
+
+    <!-- Attesa -->
+    <section id="vista-caricamento">
+      <p class="muted">Caricamento…</p>
+    </section>
+
+    <!-- Accesso e registrazione -->
+    <section id="vista-accesso" class="card" style="border:0;padding:0" hidden>
+      <h2 id="titolo-accesso">Accedi</h2>
+      <button type="button" id="btn-google" class="btn btn-block">Continua con Google</button>
+      <span class="separatore">oppure con email</span>
+      <form id="form-email" class="card" style="border:0;padding:0">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" class="input" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" class="input" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" id="btn-invia" class="btn btn-primary btn-block">Accedi</button>
+      </form>
+      <button type="button" id="btn-recupera" class="btn btn-ghost">Password dimenticata?</button>
+      <button type="button" id="btn-cambia" class="btn btn-ghost">Primo accesso? Crea la password</button>
+    </section>
+
+    <!-- Verifica email -->
+    <section id="vista-verifica" class="card" style="border:0;padding:0" hidden>
+      <h2>Verifica l'email</h2>
+      <p>Apri il link ricevuto all'indirizzo <strong id="email-verifica"></strong>. Controlla anche lo spam.</p>
+      <button type="button" id="btn-verificato" class="btn btn-primary btn-block">Ho verificato</button>
+      <button type="button" id="btn-reinvia" class="btn btn-ghost">Invia di nuovo il link</button>
+      <button type="button" class="btn btn-ghost js-esci">Esci</button>
+    </section>
+
+    <!-- Account senza invito -->
+    <section id="vista-non-abilitato" class="card" style="border:0;padding:0" hidden>
+      <h2>Account non abilitato</h2>
+      <p>L'indirizzo <strong id="email-non-abilitato"></strong> non risulta invitato. Contatta il tuo trainer.</p>
+      <p class="muted">Codice account: <code id="codice-account" style="word-break:break-all"></code></p>
+      <button type="button" class="btn btn-block js-esci">Esci</button>
+    </section>
+
+    <!-- Accesso riuscito (provvisorio) -->
+    <section id="vista-entrato" class="card" style="border:0;padding:0" hidden>
+      <h2>Accesso riuscito</h2>
+      <p>Ruolo: <strong id="ruolo"></strong></p>
+      <p class="muted">La tua area è in costruzione.</p>
+      <button type="button" class="btn btn-block js-esci">Esci</button>
+    </section>
+  </main>
+
+  <noscript>Per usare l'app serve JavaScript.</noscript>
+  <script type="module" src="js/accesso/pagina.js"></script>
+</body>
+</html>
