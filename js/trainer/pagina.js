@@ -10,6 +10,8 @@ import { avviaForm, compilaForm } from "./atleta-form.js";
 import "../core/versione.js";
 import { avviaSchede } from "./schede.js";
 import { avviaSalute, mostraSalute } from "./tab-salute.js";
+import { avviaMisure, mostraMisure, schedaMisureVisibile, disegnaMisure } from "./tab-misure.js";
+import { bmi } from "../core/calcoli-misure.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 
 let trainer = null;
@@ -46,6 +48,8 @@ function disegnaProfilo(a) {
   const m = a.massimali || {};
   $("p-dati").replaceChildren(
     dato("Altezza", con(a.altezzaCm, "cm")),
+    dato("Peso", con(a.peso, "kg")),
+    dato("BMI", bmi(a.peso, a.altezzaCm)?.replace(".", ",") ?? "–"),
     dato("Test di Cooper", con(a.cooperM, "m")),
     dato("Anzianità", testoAnni(anniAllenamento(a.inizioAllenamento))),
     dato("FC riposo", con(a.fcRiposo, "bpm")),
@@ -66,6 +70,7 @@ function apri(id) {
   if (!atleta) return mostra("vuoto");
   disegnaProfilo(atleta);
   mostraSalute(atleta);
+  mostraMisure(atleta);
   mostra("profilo");
 }
 
@@ -79,6 +84,7 @@ function apriForm(id) {
 
 const ERRORI_ATLETA = {
   "app/email-gia-usata": "Questa email è già assegnata a un altro atleta.",
+  "app/data-occupata": "Esiste già una rilevazione in questa data: modifica quella.",
   "app/atleta-inesistente": "Questo atleta non esiste più. Ricarica la pagina."
 };
 const testoErrore = (e) => ERRORI_ATLETA[e?.code] || messaggioErrore(e);
@@ -120,8 +126,9 @@ async function copiaLink() {
 }
 
 avviaElenco(apri);
-avviaSchede();
-avviaSalute({ testoErrore });
+avviaMisure({ testoErrore, alAggiornato: disegnaProfilo });
+avviaSalute({ testoErrore, alConsenso: disegnaMisure });
+avviaSchede((scheda) => schedaMisureVisibile(scheda === "misurazioni"));
 avviaForm({ alSalva: salva, alAnnulla: () => apri(scelto) });
 $("btn-nuovo").addEventListener("click", () => apriForm(null));
 $("btn-modifica").addEventListener("click", () => apriForm(scelto));

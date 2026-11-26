@@ -6,6 +6,7 @@ const SCHEDE = [
   ["misurazioni", "Misurazioni"], ["livello", "Livello"]
 ];
 let attiva = "allenamenti";
+let alCambio = () => {};
 
 function disegna() {
   $("schede").replaceChildren(...SCHEDE.map(([chiave, etichetta]) => {
@@ -15,6 +16,10 @@ function disegna() {
     return b;
   }));
   SCHEDE.forEach(([chiave]) => { $("pannello-" + chiave).hidden = chiave !== attiva; });
+  alCambio(attiva);
 }
 
-export const avviaSchede = disegna;
+export function avviaSchede(funzione) {
+  alCambio = funzione;
+  disegna();
+}

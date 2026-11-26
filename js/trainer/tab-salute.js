@@ -11,6 +11,7 @@ let note = null;      // null = non ancora lette o lettura fallita
 let inModifica = null;
 let richiesta = 0;    // scarta le risposte relative a un profilo precedente
 let testoErrore = String;
+let alConsenso = () => {};
 
 const oggi = () => {
   const d = new Date();
@@ -130,6 +131,7 @@ async function cambiaConsenso(data, pulsante) {
   try {
     await salvaConsensoScritto(scelto.id, data);
     scelto.consensoScritto = data;
+    alConsenso();
     if (atleta !== scelto) return;
     chiudiForm();
     disegnaNote(note === null ? "errore" : "");
@@ -144,6 +146,7 @@ async function cambiaConsenso(data, pulsante) {
 
 export function avviaSalute(opzioni) {
   testoErrore = opzioni.testoErrore;
+  alConsenso = opzioni.alConsenso;
 
   $("form-consenso").addEventListener("submit", (ev) => {
     ev.preventDefault();

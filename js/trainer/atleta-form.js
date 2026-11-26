@@ -17,6 +17,12 @@ function leggi() {
   NUMERI.forEach((n) => { dati[n] = numero(n); });
   dati.massimali = Object.fromEntries(MASSIMALI.map((n) => [n, numero(n)]));
   dati.livelloTrainer = numero("livelloTrainer");
+  // In modifica questi valori si aggiornano solo dalla scheda Misurazioni
+  if ($("valori-iniziali").disabled) {
+    delete dati.fcRiposo;
+    delete dati.fcMax;
+    delete dati.massimali;
+  }
   return dati;
 }
 
@@ -28,6 +34,7 @@ function aggiornaAnteprima() {
 export function compilaForm(atleta) {
   const form = $("form-atleta");
   form.reset();
+  $("valori-iniziali").hidden = $("valori-iniziali").disabled = !!atleta;
   $("titolo-form").textContent = atleta ? "Modifica atleta" : "Nuovo atleta";
   if (atleta) {
     [...TESTI, ...NUMERI, "livelloTrainer"].forEach((n) => { campo(n).value = atleta[n] ?? ""; });

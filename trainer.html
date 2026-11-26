@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/trainer.css">
   <link rel="stylesheet" href="css/salute.css">
+  <link rel="stylesheet" href="css/misure.css">
 </head>
 <body>
   <nav class="nav">
@@ -98,7 +99,51 @@
           <div id="gruppi-salute" class="gruppi-salute"></div>
         </div>
 
-        <div id="pannello-misurazioni" class="pannello" hidden><p class="muted">In arrivo.</p></div>
+        <div id="pannello-misurazioni" class="pannello" hidden>
+          <p id="misure-blocco" class="avviso">Per aggiungere o modificare rilevazioni indica prima la data del consenso scritto nella scheda <strong>Salute</strong>.</p>
+          <div><button type="button" id="btn-nuova-misura" class="btn btn-primary" disabled>+ Nuova rilevazione</button></div>
+
+          <form id="form-misura" class="card" autocomplete="off" hidden>
+            <h3 id="titolo-misura"></h3>
+            <div class="griglia-campi">
+              <label class="field">Data *<input class="input" name="data" type="date" min="2000-01-01" required></label>
+              <label class="field">Peso (kg)<input class="input" name="peso" type="number" min="20" max="300" step="0.1"></label>
+              <label class="field">Vita (cm)<input class="input" name="vita" type="number" min="30" max="250" step="0.5"></label>
+              <label class="field">Fianchi (cm)<input class="input" name="fianchi" type="number" min="30" max="250" step="0.5"></label>
+              <label class="field">Torace (cm)<input class="input" name="torace" type="number" min="30" max="250" step="0.5"></label>
+              <label class="field">FC riposo (bpm)<input class="input" name="fcRiposo" type="number" min="25" max="150"></label>
+              <label class="field">FC max (bpm)<input class="input" name="fcMax" type="number" min="80" max="240"></label>
+              <label class="field">1RM Squat (kg)<input class="input" name="squat" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Panca piana (kg)<input class="input" name="panca" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Stacco (kg)<input class="input" name="stacco" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Military press (kg)<input class="input" name="military" type="number" min="1" max="600" step="0.5"></label>
+            </div>
+            <div class="riga-tag">
+              <button type="submit" id="btn-misura-salva" class="btn btn-primary">Salva rilevazione</button>
+              <button type="button" id="btn-misura-annulla" class="btn btn-ghost">Annulla</button>
+            </div>
+          </form>
+
+          <div class="card">
+            <span class="kicker">Massimali (1RM)</span>
+            <div id="rm-lista" class="rm-lista"></div>
+          </div>
+
+          <div id="misure-stato" class="avviso">
+            <span id="misure-stato-testo"></span>
+            <button type="button" id="btn-misure-riprova" class="btn">Riprova</button>
+          </div>
+          <div id="misure-storico" hidden>
+            <span class="kicker">Storico misurazioni</span>
+            <p id="misure-vuoto" class="muted">Nessuna rilevazione.</p>
+            <div id="misure-tabella" class="tabella-scorrevole">
+              <table class="table">
+                <thead><tr><th>Data</th><th>Peso</th><th>BMI</th><th>Vita</th><th>Fianchi</th><th>Torace</th><th>FC riposo</th><th>FC max</th><th>Massimali (kg)</th><th>Azioni</th></tr></thead>
+                <tbody id="misure-righe"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
         <div id="pannello-livello" class="pannello" hidden><p class="muted">In arrivo.</p></div>
 
         <div class="card">
@@ -147,8 +192,8 @@
             <span id="anteprima-livello" class="muted"></span>
           </fieldset>
 
-          <fieldset class="card">
-            <legend class="kicker">Frequenza cardiaca e massimali</legend>
+          <fieldset id="valori-iniziali" class="card">
+            <legend class="kicker">Valori iniziali: frequenza cardiaca e massimali</legend>
             <div class="griglia-campi">
               <label class="field">FC riposo (bpm)<input class="input" name="fcRiposo" type="number" min="25" max="150"></label>
               <label class="field">FC max (bpm)<input class="input" name="fcMax" type="number" min="80" max="240"></label>
