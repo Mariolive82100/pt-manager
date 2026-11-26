@@ -12,7 +12,9 @@ function parte(etichetta, peso, valore, nota) {
   barra.firstChild.style.width = valore === null ? "0" : perCento(valore);
   return crea("div", { className: "parte" },
     crea("div", { className: "parte-testa" },
-      crea("span", { textContent: `${etichetta} · peso ${peso}` }),
+      crea("span", {
+        textContent: `${etichetta} · ${peso ? `vale il ${peso} del punteggio` : "non conta nel punteggio"}`
+      }),
       crea("strong", { textContent: valore === null ? "non disponibile" : perCento(valore) })),
     barra,
     nota ? crea("span", { className: "muted", textContent: nota }) : null);
@@ -46,7 +48,7 @@ export function disegnaDettaglioEfficienza(contenitore, s) {
     parte(s.tipo === "forza" && suRipetizioni(s) ? "Ripetizioni completate" : COMPLETAMENTO[s.tipo], e.parziale ? "60%" : "45%", e.completamento),
     parte("Rispetto dei tempi", e.parziale ? "40%" : "30%", e.tempi,
       s.minEffettivi && s.minPrevisti ? `${s.minEffettivi} min effettivi su ${s.minPrevisti} previsti` : ""),
-    parte("Resa energetica", e.parziale ? "esclusa" : "25%", e.energia,
+    parte("Resa energetica", e.parziale ? "" : "25%", e.energia,
       e.kcalMin === null ? "" : `${e.kcalMin.toFixed(1).replace(".", ",")} kcal/min (riferimento 9)`),
     ...note.map((t) => crea("span", { className: "avviso", textContent: t })));
 }
