@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/trainer.css">
   <link rel="stylesheet" href="css/salute.css">
   <link rel="stylesheet" href="css/misure.css">
+  <link rel="stylesheet" href="css/livello.css">
 </head>
 <body>
   <nav class="nav">
@@ -144,7 +145,22 @@
             </div>
           </div>
         </div>
-        <div id="pannello-livello" class="pannello" hidden><p class="muted">In arrivo.</p></div>
+        <div id="pannello-livello" class="pannello" hidden>
+          <div class="griglia-livello">
+            <div class="card">
+              <span class="kicker">Assegnato dal trainer</span>
+              <div id="livello-scelte" class="scelte-livello"></div>
+              <span id="livello-nota" class="muted"></span>
+            </div>
+            <div class="card">
+              <span class="kicker">Calcolato dai test</span>
+              <span id="livello-calcolato" class="livello-grande"></span>
+              <div id="livello-test" class="card" style="border:0;padding:0"></div>
+              <span class="muted">Media dei due risultati, arrotondata per difetto.</span>
+              <button type="button" id="btn-livello-dati" class="btn">Modifica i dati dei test</button>
+            </div>
+          </div>
+        </div>
 
         <div class="card">
           <span class="kicker">Accesso dell'atleta</span>

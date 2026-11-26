@@ -12,6 +12,7 @@ import { avviaSchede } from "./schede.js";
 import { avviaSalute, mostraSalute } from "./tab-salute.js";
 import { avviaMisure, mostraMisure, schedaMisureVisibile, disegnaMisure } from "./tab-misure.js";
 import { bmi } from "../core/calcoli-misure.js";
+import { avviaLivello, mostraLivello } from "./tab-livello.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 
 let trainer = null;
@@ -71,6 +72,7 @@ function apri(id) {
   disegnaProfilo(atleta);
   mostraSalute(atleta);
   mostraMisure(atleta);
+  mostraLivello(atleta);
   mostra("profilo");
 }
 
@@ -128,6 +130,14 @@ async function copiaLink() {
 avviaElenco(apri);
 avviaMisure({ testoErrore, alAggiornato: disegnaProfilo });
 avviaSalute({ testoErrore, alConsenso: disegnaMisure });
+avviaLivello({
+  testoErrore,
+  alModificaDati: () => apriForm(scelto),
+  alAggiornato: (a, aperto) => {
+    aggiornaElenco(atleti, scelto);
+    if (aperto) disegnaProfilo(a);
+  }
+});
 avviaSchede((scheda) => schedaMisureVisibile(scheda === "misurazioni"));
 avviaForm({ alSalva: salva, alAnnulla: () => apri(scelto) });
 $("btn-nuovo").addEventListener("click", () => apriForm(null));

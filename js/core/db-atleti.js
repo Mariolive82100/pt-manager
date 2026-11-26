@@ -1,7 +1,7 @@
 // Lettura e salvataggio di atleti e inviti
 import {
   collection, doc, getDocs, query, where, orderBy, limit,
-  runTransaction, serverTimestamp, writeBatch, deleteDoc
+  runTransaction, serverTimestamp, writeBatch, deleteDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
@@ -85,3 +85,8 @@ export async function eliminaAtleta(id) {
   // 3. Infine la scheda atleta
   await deleteDoc(rif);
 }
+
+// livello: 0-3 assegnato dal trainer, null = automatico
+export const salvaLivello = (id, livello) =>
+  updateDoc(doc(db, "atleti", id),
+    { livelloTrainer: livello, aggiornatoIl: serverTimestamp() });

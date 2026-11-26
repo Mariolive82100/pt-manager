@@ -1,0 +1,17 @@
+/* Scheda Livello */
+.griglia-livello { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; gap: var(--space-4); }
+.scelte-livello { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 1px; }
+.scelta-livello {
+  min-height: 44px;
+  border: 1px solid var(--color-divider);
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.scelta-livello[aria-pressed="true"] { background: var(--color-accent-700); border-color: var(--color-accent-700); color: #fff; }
+.livello-grande { font-family: var(--font-heading); font-size: 40px; font-weight: 600; line-height: 1; text-transform: uppercase; }
+.test-livello { display: flex; justify-content: space-between; gap: var(--space-2); padding-top: var(--space-2); border-top: 1px solid var(--color-divider); font-size: 14px; }
+.test-livello strong { text-align: right; }
+.test-livello small { display: block; font-size: 12px; font-weight: 400; color: var(--color-neutral-700); }

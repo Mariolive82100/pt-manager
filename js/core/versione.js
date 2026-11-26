@@ -1,5 +1,5 @@
 // Versione del programma: va aumentata a ogni aggiornamento pubblicato
-export const VERSIONE = "0.6.0";
+export const VERSIONE = "0.7.0";
 
 document.querySelectorAll(".js-versione").forEach((nodo) => {
   nodo.textContent = "Versione " + VERSIONE;
