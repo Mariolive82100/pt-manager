@@ -36,6 +36,9 @@ function dettaglio(s, alElimina) {
   disegnaDettaglioEfficienza($("dettaglio-efficienza"), s);
   const dati = [["Durata", s.minEffettivi + " min"], ["Kcal", presente(s.kcal) ? it(s.kcal) : "–"]];
   if (presente(s.volumeEseguito)) dati.push(["Volume", `${it(s.volumeEseguito)} / ${it(s.volumePrevisto)} kg`]);
+  if (s.volumePrevisto === 0 && presente(s.ripEseguite)) {
+    dati.push(["Ripetizioni", `${it(s.ripEseguite)} / ${it(s.ripPreviste)}`]);
+  }
   if (presente(s.zonaPct)) dati.push(["Tempo in zona", s.zonaPct + "%"]);
   if (presente(s.cardioMin)) {
     dati.push(["Cardio in zona", `${it(s.zonaMin)} di ${it(s.cardioMin)} min`],

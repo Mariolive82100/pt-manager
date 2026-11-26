@@ -13,6 +13,9 @@ const diTipo = (elementi, k) => elementi.filter((e) => e.k === k);
 export const volume = (elementi) => Math.round(somma(
   diTipo(elementi, "forza"), (e) => num(e.serie) * num(e.rip) * num(e.kg)));
 
+export const ripetizioni = (elementi) =>
+  somma(diTipo(elementi, "forza"), (e) => num(e.serie) * num(e.rip));
+
 export const serieTotali = (elementi) =>
   somma(diTipo(elementi, "forza"), (e) => num(e.serie));
 
@@ -51,10 +54,20 @@ export const caricoDaPercentuale = (pct, massimale) =>
 
 const presente = (v) => v !== null && v !== undefined && v !== "";
 
+// Senza carichi previsti (corpo libero) la forza si misura in ripetizioni
+export const suRipetizioni = (s) => s.tipo !== "cardio" &&
+  presente(s.volumePrevisto) && num(s.volumePrevisto) === 0 &&
+  num(s.ripPreviste) > 0 && presente(s.ripEseguite);
+
+function completamentoForza(s) {
+  if (suRipetizioni(s)) return al1(num(s.ripEseguite) / num(s.ripPreviste));
+  return num(s.volumePrevisto) > 0 && presente(s.volumeEseguito)
+    ? al1(num(s.volumeEseguito) / num(s.volumePrevisto)) : null;
+}
+
 // Completamento 0-1, null se mancano i dati necessari
 export function completamento(s) {
-  const forza = num(s.volumePrevisto) > 0 && presente(s.volumeEseguito)
-    ? al1(num(s.volumeEseguito) / num(s.volumePrevisto)) : null;
+  const forza = completamentoForza(s);
   const cardio = presente(s.zonaPct) ? al1(num(s.zonaPct) / 100) : null;
   if (s.tipo === "forza") return forza;
   if (s.tipo === "cardio") return cardio;

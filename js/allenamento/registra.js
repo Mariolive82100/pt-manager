@@ -1,6 +1,6 @@
 // Registrazione di una sessione svolta con anteprima dell'efficienza
 import { $, crea } from "../core/ui.js";
-import { efficienza } from "../core/calcoli-allenamento.js";
+import { efficienza, ripetizioni } from "../core/calcoli-allenamento.js";
 import { elencaSchede } from "../core/db-allenamenti.js";
 import { st, haForza, haCardio } from "./stato.js";
 import { disegnaDettaglioEfficienza } from "../core/vista-efficienza.js";
@@ -14,7 +14,9 @@ let alCambio = () => {};
 
 const numero = (id) => ($(id).value === "" ? null : Number($(id).value));
 export const schedaScelta = () => scelta;
-const CAMPI_EFFETTIVI = ["r-effettivi", "r-kcal", "r-volume", "r-zona", "r-km"];
+// Con volume previsto 0 (corpo libero) servono le ripetizioni
+const senzaCarico = () => haForza() && numero("r-volume-prev") === 0;
+const CAMPI_EFFETTIVI = ["r-effettivi", "r-kcal", "r-volume", "r-rip", "r-zona", "r-km"];
 
 export function datiSessione() {
   const forza = haForza();
@@ -30,6 +32,8 @@ export function datiSessione() {
     minEffettivi: numero("r-effettivi"), kcal: numero("r-kcal"),
     volumePrevisto: forza ? numero("r-volume-prev") : null,
     volumeEseguito: forza ? numero("r-volume") : null,
+    ripPreviste: senzaCarico() ? numero("r-rip-prev") : null,
+    ripEseguite: senzaCarico() ? numero("r-rip") : null,
     zonaPct: cardio ? numero("r-zona") : null,
     km: cardio ? numero("r-km") : null,
     rpe
@@ -48,8 +52,11 @@ export function problemaSessione() {
   if (haForza() && (d.volumePrevisto === null || d.volumeEseguito === null)) {
     return "Indica volume previsto ed eseguito (0 per il solo corpo libero).";
   }
+  if (senzaCarico() && !(d.ripPreviste > 0 && d.ripEseguite !== null)) {
+    return "Senza carichi indica le ripetizioni previste ed eseguite.";
+  }
   if (haCardio() && d.zonaPct === null) return "Indica la percentuale di tempo in zona FC.";
-  const negativi = [d.kcal, d.volumePrevisto, d.volumeEseguito, d.km, d.zonaPct]
+  const negativi = [d.kcal, d.volumePrevisto, d.volumeEseguito, d.ripEseguite, d.km, d.zonaPct]
     .some((v) => v !== null && v < 0);
   if (negativi || d.zonaPct > 100) return "Controlla i valori: niente numeri negativi, zona al massimo 100%.";
   if (d.rpe === null) return "Seleziona la fatica percepita (RPE).";
@@ -62,6 +69,7 @@ export function aggiornaRegistrazione() {
   $("r-prev-forza-box").hidden = !misto;
   $("r-prev-cardio-box").hidden = !misto;
   ["r-volume-prev-box", "r-volume-box"].forEach((id) => { $(id).hidden = !haForza(); });
+  ["r-rip-prev-box", "r-rip-box"].forEach((id) => { $(id).hidden = !senzaCarico(); });
   ["r-zona-box", "r-km-box"].forEach((id) => { $(id).hidden = !haCardio(); });
   [...$("rpe").children].forEach((b, i) => b.setAttribute("aria-pressed", String(rpe === i + 1)));
   const dati = datiSessione();
@@ -78,6 +86,7 @@ function scegli(id) {
   $("r-prev-forza").value = scelta ? scelta.minForza || "" : "";
   $("r-prev-cardio").value = scelta ? scelta.minCardio || "" : "";
   $("r-volume-prev").value = scelta && scelta.tipo !== "cardio" ? scelta.volumeKg : "";
+  $("r-rip-prev").value = scelta && scelta.tipo !== "cardio" ? ripetizioni(scelta.elementi) : "";
   alCambioScheda(scelta);
 }
 

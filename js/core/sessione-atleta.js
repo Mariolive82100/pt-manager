@@ -1,5 +1,5 @@
 // Allenamento svolto dall'atleta: calcoli e dati da inviare (nessuna grafica)
-import { efficienza, isoLocale } from "./calcoli-allenamento.js";
+import { efficienza, isoLocale, ripetizioni } from "./calcoli-allenamento.js";
 
 const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : 0);
 
@@ -30,6 +30,9 @@ export const bozzaValida = (bozza, scheda) =>
 export const volumeEseguito = (bozza) => Math.round(bozza.stato.reduce(
   (t, e) => t + (e.serie || []).filter((s) => s.fatta)
     .reduce((p, s) => p + num(s.rip) * num(s.kg), 0), 0));
+
+export const ripetizioniEseguite = (bozza) => bozza.stato.reduce(
+  (t, e) => t + (e.serie || []).filter((s) => s.fatta).reduce((p, s) => p + num(s.rip), 0), 0);
 
 // Cosa non risulta spuntato, per avvisare prima dell'invio
 export function nonSpuntati(bozza) {
@@ -72,6 +75,8 @@ export function componiSessione(scheda, bozza, valori) {
     kcal: valori.kcal ?? null,
     volumePrevisto: forza ? scheda.volumeKg : null,
     volumeEseguito: forza ? volumeEseguito(bozza) : null,
+    ripPreviste: forza ? ripetizioni(scheda.elementi) : null,
+    ripEseguite: forza ? ripetizioniEseguite(bozza) : null,
     cardioMin: cardio ? valori.cardioMin ?? null : null,
     zonaMin: cardio ? valori.zonaMin ?? null : null,
     zonaPct: !cardio || !presente(valori.cardioMin) || !presente(valori.zonaMin) ? null

@@ -1,8 +1,9 @@
 // Fine allenamento: dati finali, anteprima e invio al trainer
 import { $, crea } from "../core/ui.js";
 import {
-  componiSessione, problemaInvio, minutiTrascorsi, nonSpuntati, volumeEseguito
+  componiSessione, problemaInvio, minutiTrascorsi, nonSpuntati, volumeEseguito, ripetizioniEseguite
 } from "../core/sessione-atleta.js";
+import { ripetizioni } from "../core/calcoli-allenamento.js";
 import { disegnaDettaglioEfficienza } from "../core/vista-efficienza.js";
 import { inviaSessione } from "../core/db-atleta.js";
 import { testoErrore } from "../core/errori.js";
@@ -41,8 +42,9 @@ export function apriFine(s, b, fine) {
   $("f-durata").value = minutiTrascorsi(b.inizio, fine);
   ["f-cardio-box", "f-zona-box", "f-km-box"].forEach((id) => { $(id).hidden = s.tipo === "forza"; });
   $("fine-volume").hidden = s.tipo === "cardio";
-  $("fine-volume").textContent =
-    `Volume eseguito: ${volumeEseguito(b).toLocaleString("it-IT")} kg (previsto ${s.volumeKg.toLocaleString("it-IT")} kg)`;
+  $("fine-volume").textContent = s.volumeKg > 0
+    ? `Volume eseguito: ${volumeEseguito(b).toLocaleString("it-IT")} kg (previsto ${s.volumeKg.toLocaleString("it-IT")} kg)`
+    : `Ripetizioni eseguite: ${ripetizioniEseguite(b)} di ${ripetizioni(s.elementi)}`;
   errore("");
   aggiorna();
 }
