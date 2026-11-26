@@ -1,0 +1,92 @@
+/* P.T. Manager - area trainer */
+.messaggio-trainer { margin: var(--space-4); }
+.area { display: flex; flex-wrap: wrap; align-items: stretch; min-height: calc(100vh - 70px); }
+
+.colonna-elenco {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 0 280px;
+  max-width: 340px;
+  padding: var(--space-6) var(--space-4);
+  border-right: 1px solid var(--color-divider);
+}
+.testata-elenco { display: flex; align-items: baseline; justify-content: space-between; }
+.filtri, .riga-tag { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.filtro { border: 0; min-height: 32px; font-family: inherit; cursor: pointer; }
+.elenco { display: flex; flex-direction: column; border-top: 1px solid var(--color-divider); }
+
+.riga-atleta {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px var(--space-3);
+  padding: var(--space-3) var(--space-2);
+  border: 0;
+  border-bottom: 1px solid var(--color-divider);
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.riga-atleta[aria-current] { background: var(--color-accent-100); border-left-color: var(--color-accent); }
+.riga-nome { font-weight: 700; }
+.riga-eff {
+  grid-row: span 2;
+  align-self: center;
+  text-align: right;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-accent-700);
+}
+.riga-eff small {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--color-neutral-700);
+}
+.riga-info { display: flex; align-items: center; gap: var(--space-2); font-size: 12px; color: var(--color-neutral-700); }
+
+.contenuto { flex: 999 1 480px; min-width: 0; padding: var(--space-6) var(--space-8); }
+.pila { display: flex; flex-direction: column; gap: var(--space-6); max-width: 960px; }
+
+.testata-profilo { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
+.fototessera {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 84px;
+  height: 108px;
+  border: 1px dashed var(--color-accent);
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 600;
+}
+.testata-testi { flex: 1 1 240px; min-width: 0; }
+.testata-testi h1 { overflow-wrap: anywhere; }
+
+.griglia-dati {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  border: 1px solid var(--color-divider);
+}
+.dato { display: flex; flex-direction: column; padding: var(--space-3); }
+.dato span { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); }
+.dato strong { font-family: var(--font-heading); font-size: 24px; font-weight: 600; }
+
+fieldset.card { margin: 0; min-width: 0; }
+.griglia-campi { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); align-items: end; gap: var(--space-4); }
+label.field { font-size: 13px; color: var(--color-neutral-800); }
+
+@media (max-width: 700px) {
+  .colonna-elenco { max-width: none; border-right: 0; border-bottom: 1px solid var(--color-divider); }
+  .contenuto { padding: var(--space-6) var(--space-4); }
+}

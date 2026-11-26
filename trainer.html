@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>P.T. Manager - Atleti</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/trainer.css">
+</head>
+<body>
+  <nav class="nav">
+    <span class="nav-brand">P.T. Manager</span>
+    <button type="button" id="btn-esci" class="btn btn-ghost">Esci</button>
+  </nav>
+
+  <p id="messaggio" class="avviso messaggio-trainer" role="status" hidden></p>
+  <p id="caricamento" class="muted messaggio-trainer">Caricamento…</p>
+
+  <div id="area" class="area" hidden>
+    <aside class="colonna-elenco">
+      <div class="testata-elenco">
+        <h2>Atleti</h2>
+        <span id="conteggio" class="muted"></span>
+      </div>
+      <button type="button" id="btn-nuovo" class="btn btn-primary btn-block">+ Nuovo atleta</button>
+      <input id="cerca" class="input" type="search" placeholder="Cerca atleta…" aria-label="Cerca atleta">
+      <div id="filtri" class="filtri"></div>
+      <div id="elenco" class="elenco"></div>
+      <p id="elenco-vuoto" class="muted" hidden></p>
+    </aside>
+
+    <main class="contenuto">
+      <section id="vista-vuoto">
+        <p class="muted">Seleziona un atleta o creane uno nuovo.</p>
+      </section>
+
+      <!-- Profilo di base -->
+      <section id="vista-profilo" class="pila" hidden>
+        <header class="testata-profilo">
+          <div id="p-iniziali" class="fototessera" aria-hidden="true"></div>
+          <div class="testata-testi">
+            <span id="p-sopra" class="kicker"></span>
+            <h1 id="p-nome"></h1>
+            <div class="riga-tag">
+              <span id="p-livello" class="tag tag-accent"></span>
+              <span id="p-calcolato" class="tag tag-outline"></span>
+              <span id="p-obiettivo" class="muted"></span>
+            </div>
+          </div>
+          <button type="button" id="btn-modifica" class="btn">Modifica</button>
+        </header>
+        <div id="p-dati" class="griglia-dati"></div>
+        <div class="card">
+          <span class="kicker">Accesso dell'atleta</span>
+          <span id="p-email"></span>
+          <button type="button" id="btn-copia" class="btn">Copia il link dell'app</button>
+        </div>
+      </section>
+
+      <!-- Modulo nuovo / modifica -->
+      <section id="vista-form" hidden>
+        <form id="form-atleta" class="pila" autocomplete="off">
+          <h2 id="titolo-form"></h2>
+
+          <fieldset class="card">
+            <legend class="kicker">Anagrafica</legend>
+            <div class="griglia-campi">
+              <label class="field">Nome e cognome *<input class="input" name="nome" maxlength="80" required></label>
+              <label class="field">Data di nascita *<input class="input" name="dataNascita" type="date" min="1900-01-01" required></label>
+              <label class="field">Sesso *
+                <select class="input" name="sesso" required>
+                  <option value="">Scegli…</option><option value="F">Donna</option><option value="M">Uomo</option>
+                </select>
+              </label>
+              <label class="field">Obiettivo<input class="input" name="obiettivo" maxlength="80"></label>
+              <label class="field">Altezza (cm)<input class="input" name="altezzaCm" type="number" min="80" max="250"></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="card">
+            <legend class="kicker">Livello</legend>
+            <div class="griglia-campi">
+              <label class="field">Inizio allenamento (mese e anno)<input class="input" name="inizioAllenamento" type="month" min="1940-01" placeholder="AAAA-MM" pattern="(19|20)[0-9]{2}-(0[1-9]|1[0-2])"></label>
+              <label class="field">Test di Cooper (metri)<input class="input" name="cooperM" type="number" min="300" max="6000"></label>
+              <label class="field">Livello assegnato
+                <select class="input" name="livelloTrainer">
+                  <option value="">Automatico (calcolato)</option>
+                  <option value="0">Principiante</option><option value="1">Intermedio</option>
+                  <option value="2">Avanzato</option><option value="3">Pro</option>
+                </select>
+              </label>
+            </div>
+            <span id="anteprima-livello" class="muted"></span>
+          </fieldset>
+
+          <fieldset class="card">
+            <legend class="kicker">Frequenza cardiaca e massimali</legend>
+            <div class="griglia-campi">
+              <label class="field">FC riposo (bpm)<input class="input" name="fcRiposo" type="number" min="25" max="150"></label>
+              <label class="field">FC max (bpm)<input class="input" name="fcMax" type="number" min="80" max="240"></label>
+              <label class="field">1RM Squat (kg)<input class="input" name="squat" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Panca piana (kg)<input class="input" name="panca" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Stacco (kg)<input class="input" name="stacco" type="number" min="1" max="600" step="0.5"></label>
+              <label class="field">1RM Military press (kg)<input class="input" name="military" type="number" min="1" max="600" step="0.5"></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="card">
+            <legend class="kicker">Accesso</legend>
+            <label class="field">Email dell'atleta<input class="input" name="email" type="email" maxlength="120"></label>
+            <span class="muted">Prepara l'invito. L'app non spedisce email: il link va inviato da te.</span>
+          </fieldset>
+
+          <div class="riga-tag">
+            <button type="submit" id="btn-salva" class="btn btn-primary">Salva atleta</button>
+            <button type="button" id="btn-annulla" class="btn btn-ghost">Annulla</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/trainer/pagina.js"></script>
+</body>
+</html>

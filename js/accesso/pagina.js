@@ -43,6 +43,8 @@ async function apriProfilo(user) {
     $("email-non-abilitato").textContent = user.email;
     $("codice-account").textContent = user.uid;
     mostra("non-abilitato");
+  } else if (profilo.ruolo === "trainer") {
+    location.replace("trainer.html");
   } else {
     $("ruolo").textContent = profilo.ruolo;
     mostra("entrato");
