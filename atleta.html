@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>P.T. Manager - Il mio allenamento</title>
+  <meta name="theme-color" content="#416180">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icona-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/efficienza.css">
+  <link rel="stylesheet" href="css/voci.css">
+  <link rel="stylesheet" href="css/atleta.css">
+</head>
+<body>
+  <nav class="nav">
+    <span class="nav-brand">P.T. Manager</span>
+    <span class="muted js-versione"></span>
+    <button type="button" class="btn btn-ghost js-esci">Esci</button>
+  </nav>
+
+  <main class="pagina-atleta">
+    <span id="nome-atleta" class="kicker"></span>
+    <p id="messaggio" class="avviso" role="status" hidden></p>
+    <p id="caricamento" class="muted">Caricamento…</p>
+
+    <section id="vista-consenso" class="blocco" hidden>
+      <h2>Informativa e consenso</h2>
+      <p id="consenso-nota" class="muted"></p>
+      <div id="consenso-testo" class="card informativa"></div>
+      <label class="riga-spunta">
+        <input id="consenso-spunta" type="checkbox">
+        <span>Ho letto l'informativa e acconsento al trattamento dei miei dati, <strong>compresi quelli sulla salute</strong>.</span>
+      </label>
+      <p id="consenso-errore" class="avviso avviso-errore" role="alert" hidden></p>
+      <button type="button" id="btn-accetta" class="btn btn-primary btn-block" disabled>Accetta e continua</button>
+      <button type="button" class="btn btn-block js-esci">Non accetto, esci</button>
+    </section>
+
+    <div id="app" class="blocco" hidden>
+      <div id="schede-atleta" class="schede-atleta">
+        <button type="button" id="tab-oggi">Oggi</button>
+        <button type="button" id="tab-storico">Storico</button>
+        <button type="button" id="tab-dati">I miei dati</button>
+      </div>
+
+      <section id="pannello-oggi">
+        <div id="passo-elenco" class="blocco">
+          <div id="oggi-elenco" class="blocco"></div>
+        </div>
+
+        <div id="passo-corso" class="blocco" hidden>
+          <div class="barra-corso">
+            <h2 id="corso-nome"></h2>
+            <span id="cronometro" class="cronometro" role="timer"></span>
+          </div>
+          <p id="avviso-salvataggio" class="avviso avviso-errore" hidden>Il telefono non permette il salvataggio temporaneo: non chiudere l'app prima dell'invio.</p>
+          <p id="corso-note" class="avviso note-trainer"></p>
+          <div id="corso-elementi" class="blocco"></div>
+          <button type="button" id="btn-termina" class="btn btn-primary btn-block">Termina allenamento</button>
+          <button type="button" id="btn-abbandona" class="btn btn-ghost btn-block">Annulla allenamento</button>
+        </div>
+
+        <div id="passo-fine" class="blocco" hidden>
+          <h2>Com'è andata</h2>
+          <fieldset id="campi-fine" class="card">
+            <p id="fine-volume" class="muted"></p>
+            <label class="field">Durata totale (minuti, correggibile)<input id="f-durata" class="input" type="number" inputmode="numeric" min="1" max="1000"></label>
+            <label id="f-cardio-box" class="field">Minuti di cardio svolti<input id="f-cardio" class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.5"></label>
+            <label id="f-zona-box" class="field">Di cui minuti nella zona FC prevista<input id="f-zona" class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.5"></label>
+            <label class="field">Kcal (facoltative)<input id="f-kcal" class="input" type="number" inputmode="numeric" min="0" max="10000"></label>
+            <label id="f-km-box" class="field">Distanza km (facoltativa)<input id="f-km" class="input" type="number" inputmode="decimal" min="0" max="1000" step="0.01"></label>
+            <span>Quanto è stato faticoso? (RPE, da 1 a 10)</span>
+            <div id="rpe" class="rpe"></div>
+          </fieldset>
+          <div class="card"><span class="kicker">Anteprima efficienza</span><div id="anteprima" class="efficienza"></div></div>
+          <p id="errore-invio" class="avviso avviso-errore" role="alert" hidden></p>
+          <button type="button" id="btn-invia-sessione" class="btn btn-primary btn-block">Invia al trainer</button>
+          <button type="button" id="btn-torna-corso" class="btn btn-ghost btn-block">Torna all'allenamento</button>
+        </div>
+
+        <div id="passo-inviato" class="blocco" hidden>
+          <div class="card inviato">
+            <span class="kicker">Sessione completata</span>
+            <span id="inviato-punteggio" class="punteggio-numero"></span>
+            <span id="inviato-testo" class="muted"></span>
+          </div>
+          <button type="button" id="btn-inviato-ok" class="btn btn-block">Torna alle schede</button>
+        </div>
+      </section>
+
+      <section id="pannello-storico" class="blocco" hidden>
+        <div id="storico-elenco" class="blocco"></div>
+      </section>
+
+      <section id="pannello-dati" class="blocco" hidden>
+        <div class="card"><span class="kicker">Note sanitarie · sola lettura</span><div id="mie-note" class="blocco"></div></div>
+        <div class="card"><span class="kicker">Valori attuali</span><div id="miei-valori" class="valori"></div></div>
+        <div class="card"><span class="kicker">Storico misurazioni</span><div id="mie-misure"></div></div>
+        <div class="card">
+          <span class="kicker">Privacy</span>
+          <details id="informativa-app"><summary>Leggi l'informativa</summary><div id="informativa-testo" class="informativa"></div></details>
+          <button type="button" id="btn-ritira" class="btn">Ritira il consenso</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script type="module" src="js/atleta/pagina.js"></script>
+  <script src="js/core/pwa.js"></script>
+</body>
+</html>

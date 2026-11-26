@@ -7,6 +7,7 @@ const ERRORI = {
   "app/atleta-inesistente": "Questo atleta non esiste più. Ricarica la pagina.",
   "app/scheda-inesistente": "Questa scheda non esiste più. Ricarica la pagina.",
   "app/scheda-completata": "Questa scheda risulta già completata o ritirata. Ricarica la pagina.",
+  "app/scheda-modificata": "Il trainer ha modificato la scheda: questo allenamento non può essere inviato. Contattalo.",
   "app/esercizio-presente": "Esiste già un esercizio con questo nome.",
   "app/troppi-esercizi": "Hai raggiunto il numero massimo di esercizi personalizzati."
 };

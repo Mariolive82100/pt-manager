@@ -1,0 +1,61 @@
+/* P.T. Manager - app atleta (telefono) */
+.pagina-atleta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 520px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-4) calc(var(--space-8) + env(safe-area-inset-bottom));
+}
+.blocco { display: flex; flex-direction: column; gap: var(--space-4); }
+fieldset.card { margin: 0; min-width: 0; }
+label.field { font-size: 13px; color: var(--color-neutral-800); }
+summary { min-height: 44px; padding: var(--space-2) 0; cursor: pointer; }
+.note-trainer { margin: 0; white-space: pre-wrap; }
+
+.schede-atleta { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--color-divider); }
+.schede-atleta button { min-height: 46px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.schede-atleta button[aria-pressed="true"] { background: var(--color-accent); color: #fff; }
+
+.informativa p { font-size: 14px; }
+.riga-spunta { display: flex; align-items: flex-start; gap: var(--space-3); }
+.riga-spunta input { flex: none; width: 24px; height: 24px; }
+
+.barra-corso {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-divider);
+}
+.barra-corso h2 { margin: 0; font-size: 24px; overflow-wrap: anywhere; }
+.cronometro { font-family: var(--font-heading); font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.esercizio h4 { margin: 0; }
+.serie { display: grid; grid-template-columns: 22px 1fr 1fr 1.2fr; align-items: end; gap: var(--space-2); }
+.serie-num { padding-bottom: 11px; font-weight: 700; color: var(--color-accent-800); }
+.mini-serie { display: flex; flex-direction: column; min-width: 0; font-size: 11px; color: var(--color-neutral-700); }
+.spunta { min-height: 44px; border: 1px solid var(--color-accent); background: transparent; color: var(--color-accent-800); font: inherit; font-size: 14px; cursor: pointer; }
+.spunta[aria-pressed="true"] { background: var(--color-accent); color: #fff; }
+
+.rpe { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--color-divider); }
+.rpe button { min-height: 46px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.rpe button[aria-pressed="true"] { background: var(--color-accent); color: #fff; }
+
+.inviato { align-items: center; text-align: center; padding: var(--space-8) var(--space-4); }
+.inviato .punteggio-numero { font-size: 96px; }
+
+details.card summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+details.card summary > span:first-child { display: flex; flex-direction: column; }
+details.card summary small { font-size: 12px; color: var(--color-neutral-700); }
+.voto-atleta { font-family: var(--font-heading); font-size: 28px; font-weight: 600; color: var(--color-accent-800); }
+
+.valori { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.dato { display: flex; flex-direction: column; }
+.dato span { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-neutral-700); }
+.dato strong { font-family: var(--font-heading); font-size: 22px; }

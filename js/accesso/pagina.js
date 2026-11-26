@@ -7,7 +7,7 @@ import {
 import "../core/versione.js";
 
 const $ = (id) => document.getElementById(id);
-const VISTE = ["caricamento", "accesso", "verifica", "non-abilitato", "entrato"];
+const VISTE = ["caricamento", "accesso", "verifica", "non-abilitato"];
 let registrazione = false;
 
 function mostra(nome) {
@@ -46,9 +46,12 @@ async function apriProfilo(user) {
     mostra("non-abilitato");
   } else if (profilo.ruolo === "trainer") {
     location.replace("trainer.html");
+  } else if (profilo.ruolo === "atleta") {
+    location.replace("atleta.html");
   } else {
-    $("ruolo").textContent = profilo.ruolo;
-    mostra("entrato");
+    $("email-non-abilitato").textContent = user.email;
+    $("codice-account").textContent = user.uid;
+    mostra("non-abilitato");
   }
 }
 

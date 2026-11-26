@@ -2,6 +2,7 @@
 import { $, crea } from "../core/ui.js";
 import { TIPI } from "../core/calcoli-allenamento.js";
 import { disegnaDettaglioEfficienza } from "../core/vista-efficienza.js";
+import { elencoSvolto } from "../core/vista-scheda.js";
 
 const dataItaliana = (iso) => iso.split("-").reverse().join("/");
 const it = (n) => n.toLocaleString("it-IT");
@@ -36,11 +37,16 @@ function dettaglio(s, alElimina) {
   const dati = [["Durata", s.minEffettivi + " min"], ["Kcal", presente(s.kcal) ? it(s.kcal) : "–"]];
   if (presente(s.volumeEseguito)) dati.push(["Volume", `${it(s.volumeEseguito)} / ${it(s.volumePrevisto)} kg`]);
   if (presente(s.zonaPct)) dati.push(["Tempo in zona", s.zonaPct + "%"]);
+  if (presente(s.cardioMin)) {
+    dati.push(["Cardio in zona", `${it(s.zonaMin)} di ${it(s.cardioMin)} min`],
+      ["Cardio previsto", s.minCardio + " min"]);
+  }
   if (presente(s.km)) dati.push(["Distanza", it(s.km) + " km"]);
   dati.push(["RPE", presente(s.rpe) ? s.rpe + " / 10" : "–"],
     ["Inserita da", s.origine === "atleta" ? "Atleta" : "Trainer"]);
   $("dettaglio-dati").replaceChildren(...dati.map(([e, v]) => crea("div", { className: "dato" },
     crea("span", { textContent: e }), crea("strong", { textContent: v }))));
+  $("dettaglio-svolto").replaceChildren(...(s.dettaglio ? [elencoSvolto(s.dettaglio)] : []));
   const b = crea("button", { type: "button", className: "btn btn-ghost", textContent: "Elimina sessione" });
   b.addEventListener("click", () => alElimina(s, b));
   $("dettaglio-azioni").replaceChildren(b);

@@ -14,6 +14,7 @@ import { avviaSalute, mostraSalute } from "./tab-salute.js";
 import { avviaMisure, mostraMisure, schedaMisureVisibile, disegnaMisure } from "./tab-misure.js";
 import { bmi } from "../core/calcoli-misure.js";
 import { avviaLivello, mostraLivello } from "./tab-livello.js";
+import { mostraConsensoApp } from "./consenso-app.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 import { avviaAllenamenti, mostraAllenamenti, dimenticaAllenamenti } from "./tab-allenamenti.js";
 
@@ -73,6 +74,7 @@ function apri(id) {
   if (!atleta) return mostra("vuoto");
   disegnaProfilo(atleta);
   mostraSalute(atleta);
+  mostraConsensoApp(atleta.id);
   mostraMisure(atleta);
   mostraLivello(atleta);
   mostraAllenamenti(atleta);
