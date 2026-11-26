@@ -56,6 +56,9 @@
           <span id="p-email"></span>
           <button type="button" id="btn-copia" class="btn">Copia il link dell'app</button>
         </div>
+        <div class="zona-elimina">
+          <button type="button" id="btn-elimina" class="btn btn-pericolo">Elimina atleta</button>
+        </div>
       </section>
 
       <!-- Modulo nuovo / modifica -->
@@ -120,6 +123,22 @@
       </section>
     </main>
   </div>
+
+  <dialog id="dialogo-elimina" aria-labelledby="titolo-elimina">
+    <form id="form-elimina" class="card" autocomplete="off">
+      <h3 id="titolo-elimina">Elimina atleta</h3>
+      <p>Stai per cancellare <strong id="elimina-nome"></strong> e tutti i suoi dati. L'operazione è <strong>definitiva</strong>.</p>
+      <p class="muted">L'eventuale account di accesso va cancellato a parte nella console Firebase. Non cancellare account trainer.</p>
+      <label class="field">Per confermare, riscrivi il nome
+        <input id="elimina-conferma" class="input">
+      </label>
+      <p id="elimina-errore" class="avviso avviso-errore" role="alert" hidden></p>
+      <div class="riga-tag">
+        <button type="submit" id="btn-elimina-conferma" class="btn btn-pericolo" disabled>Elimina definitivamente</button>
+        <button type="button" id="btn-elimina-annulla" class="btn btn-ghost">Annulla</button>
+      </div>
+    </form>
+  </dialog>
 
   <script type="module" src="js/trainer/pagina.js"></script>
 </body>

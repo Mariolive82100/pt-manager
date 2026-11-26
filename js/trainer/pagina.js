@@ -7,6 +7,7 @@ import {
 } from "../core/calcoli.js";
 import { avviaElenco, aggiornaElenco } from "./elenco.js";
 import { avviaForm, compilaForm } from "./atleta-form.js";
+import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 
 let trainer = null;
 let atleti = [];
@@ -119,6 +120,15 @@ avviaForm({ alSalva: salva, alAnnulla: () => apri(scelto) });
 $("btn-nuovo").addEventListener("click", () => apriForm(null));
 $("btn-modifica").addEventListener("click", () => apriForm(scelto));
 $("btn-copia").addEventListener("click", copiaLink);
+avviaElimina({
+  testoErrore,
+  alEliminato: (id) => {
+    atleti = atleti.filter((a) => a.id !== id);
+    apri(null);
+    avviso("Atleta eliminato.");
+  }
+});
+$("btn-elimina").addEventListener("click", () => chiediElimina(trova(scelto)));
 $("btn-esci").addEventListener("click", () => esci());
 
 osservaAccesso(async (user) => {

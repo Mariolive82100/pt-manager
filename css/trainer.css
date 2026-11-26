@@ -90,3 +90,17 @@ label.field { font-size: 13px; color: var(--color-neutral-800); }
   .colonna-elenco { max-width: none; border-right: 0; border-bottom: 1px solid var(--color-divider); }
   .contenuto { padding: var(--space-6) var(--space-4); }
 }
+
+/* Eliminazione */
+.zona-elimina { padding-top: var(--space-4); border-top: 1px solid var(--color-divider); }
+.btn-pericolo { border-color: var(--color-errore); color: var(--color-errore); }
+.btn-pericolo:hover { background: var(--color-errore-sfondo); }
+dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 0;
+  border: 1px solid var(--color-divider);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+dialog .card { border: 0; padding: var(--space-6); }
+dialog::backdrop { background: rgba(29, 31, 32, 0.5); }

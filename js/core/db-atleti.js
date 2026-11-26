@@ -1,7 +1,7 @@
 // Lettura e salvataggio di atleti e inviti
 import {
   collection, doc, getDocs, query, where, orderBy, limit,
-  runTransaction, serverTimestamp
+  runTransaction, serverTimestamp, writeBatch, deleteDoc
 } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 import { db } from "./firebase-config.js";
 
@@ -49,4 +49,39 @@ export async function salvaAtleta(id, dati, trainerUid) {
   });
 
   return rif.id;
+}
+
+const SOTTORACCOLTE = ["salute", "misurazioni", "schede", "sessioni"];
+const BLOCCO = 400; // un gruppo di scritture ne accetta al massimo 500
+
+async function cancellaInBlocchi(riferimenti) {
+  for (let i = 0; i < riferimenti.length; i += BLOCCO) {
+    const gruppo = writeBatch(db);
+    riferimenti.slice(i, i + BLOCCO).forEach((r) => gruppo.delete(r));
+    await gruppo.commit();
+  }
+}
+
+const riferimentiDi = async (richiesta) =>
+  (await getDocs(richiesta)).docs.map((d) => d.ref);
+
+// Cancellazione definitiva. Se si interrompe, si può ripetere:
+// la scheda atleta viene eliminata per ultima.
+export async function eliminaAtleta(id) {
+  const rif = doc(db, "atleti", id);
+
+  // 1. Revoca l'accesso: inviti e profili collegati (mai quelli trainer)
+  const inviti = await riferimentiDi(query(collection(db, "inviti"), where("atletaId", "==", id)));
+  const accessi = (await getDocs(query(collection(db, "utenti"), where("atletaId", "==", id))))
+    .docs.filter((d) => d.data().ruolo === "atleta").map((d) => d.ref);
+  await cancellaInBlocchi([...inviti, ...accessi]);
+
+  // 2. Cancella i dati collegati (Firestore non lo fa da solo)
+  for (const nome of SOTTORACCOLTE) {
+    await cancellaInBlocchi(await riferimentiDi(collection(db, "atleti", id, nome)));
+  }
+  await cancellaInBlocchi(["foto", "consenso"].map((n) => doc(db, "atleti", id, "privato", n)));
+
+  // 3. Infine la scheda atleta
+  await deleteDoc(rif);
 }
