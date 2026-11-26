@@ -1,4 +1,5 @@
 /* P.T. Manager - grafica comune (stile "Industry" del mockup) */
+@import url("font.css");
 
 :root {
   --color-bg: #f2f2f3;

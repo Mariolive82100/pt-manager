@@ -49,7 +49,13 @@
       <!-- Profilo di base -->
       <section id="vista-profilo" class="pila" hidden>
         <header class="testata-profilo">
-          <div id="p-iniziali" class="fototessera" aria-hidden="true"></div>
+          <div class="box-foto">
+            <div id="p-iniziali" class="fototessera"></div>
+            <button type="button" id="btn-foto" class="btn btn-ghost btn-foto" disabled>Carica foto</button>
+            <button type="button" id="btn-foto-togli" class="btn btn-ghost btn-foto" hidden>Togli foto</button>
+            <span id="foto-stato" class="muted" role="status"></span>
+            <input id="foto-file" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+          </div>
           <div class="testata-testi">
             <span id="p-sopra" class="kicker"></span>
             <h1 id="p-nome"></h1>
@@ -218,6 +224,17 @@
           <span id="p-email"></span>
           <button type="button" id="btn-copia" class="btn">Copia il link dell'app</button>
         </div>
+        <div class="card">
+          <span class="kicker">Dati dell'atleta · GDPR</span>
+          <span class="muted">Crea una copia completa di tutti i dati, da consegnare all'atleta che la richiede.</span>
+          <button type="button" id="btn-esporta" class="btn">Esporta dati</button>
+          <span id="esporta-stato" class="muted" role="status"></span>
+          <div id="esporta-file" class="riga-tag" hidden>
+            <a id="esporta-html" class="btn btn-primary">Scarica versione leggibile</a>
+            <a id="esporta-json" class="btn">Scarica file dati (JSON)</a>
+          </div>
+        </div>
+
         <div class="zona-elimina">
           <button type="button" id="btn-elimina" class="btn btn-pericolo">Elimina atleta</button>
         </div>

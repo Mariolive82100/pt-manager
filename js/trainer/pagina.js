@@ -15,6 +15,8 @@ import { avviaMisure, mostraMisure, schedaMisureVisibile, disegnaMisure } from "
 import { bmi } from "../core/calcoli-misure.js";
 import { avviaLivello, mostraLivello } from "./tab-livello.js";
 import { mostraConsensoApp } from "./consenso-app.js";
+import { avviaFoto, mostraFoto, dimenticaFoto } from "./foto.js";
+import { avviaEsporta, azzeraEsporta } from "./esporta.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 import { avviaAllenamenti, mostraAllenamenti, dimenticaAllenamenti } from "./tab-allenamenti.js";
 
@@ -42,7 +44,7 @@ function testoAnni(anni) {
 }
 
 function disegnaProfilo(a) {
-  $("p-iniziali").textContent = iniziali(a.nome);
+  mostraFoto(a, iniziali(a.nome));
   $("p-sopra").textContent =
     `Profilo atleta · ${a.sesso === "F" ? "Donna" : "Uomo"} · ${eta(a.dataNascita)} anni`;
   $("p-nome").textContent = a.nome;
@@ -71,6 +73,7 @@ function apri(id) {
   avviso("");
   aggiornaElenco(atleti, scelto);
   const atleta = trova(id);
+  azzeraEsporta(atleta);
   if (!atleta) return mostra("vuoto");
   disegnaProfilo(atleta);
   mostraSalute(atleta);
@@ -82,6 +85,7 @@ function apri(id) {
 }
 
 function apriForm(id) {
+  azzeraEsporta(id ? trova(id) : null);
   inModifica = id;
   avviso("");
   compilaForm(id ? trova(id) : null);
@@ -142,10 +146,13 @@ avviaForm({ alSalva: salva, alAnnulla: () => apri(scelto) });
 $("btn-nuovo").addEventListener("click", () => apriForm(null));
 $("btn-modifica").addEventListener("click", () => apriForm(scelto));
 $("btn-copia").addEventListener("click", copiaLink);
+avviaFoto({ testoErrore });
+avviaEsporta({ testoErrore });
 avviaElimina({
   testoErrore,
   alEliminato: (id) => {
     dimenticaAllenamenti(id);
+    dimenticaFoto(id);
     atleti = atleti.filter((a) => a.id !== id);
     apri(null);
     avviso("Atleta eliminato.");

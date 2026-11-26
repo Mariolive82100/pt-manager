@@ -77,6 +77,7 @@ export function componiSessione(scheda, bozza, valori) {
     volumeEseguito: forza ? volumeEseguito(bozza) : null,
     ripPreviste: forza ? ripetizioni(scheda.elementi) : null,
     ripEseguite: forza ? ripetizioniEseguite(bozza) : null,
+    regolaCardio: cardio ? 2 : null,
     cardioMin: cardio ? valori.cardioMin ?? null : null,
     zonaMin: cardio ? valori.zonaMin ?? null : null,
     zonaPct: !cardio || !presente(valori.cardioMin) || !presente(valori.zonaMin) ? null

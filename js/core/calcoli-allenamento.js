@@ -65,10 +65,21 @@ function completamentoForza(s) {
     ? al1(num(s.volumeEseguito) / num(s.volumePrevisto)) : null;
 }
 
+// regolaCardio 2: minuti in zona ÷ il maggiore tra previsti e svolti.
+// Senza il contrassegno (sessioni precedenti e del trainer) vale la percentuale
+function completamentoCardio(s) {
+  if (s.regolaCardio !== 2) {
+    return presente(s.zonaPct) ? al1(num(s.zonaPct) / 100) : null;
+  }
+  if (!presente(s.zonaMin) || !presente(s.cardioMin)) return null;
+  const base = Math.max(num(s.minCardio), num(s.cardioMin));
+  return base > 0 ? al1(num(s.zonaMin) / base) : null;
+}
+
 // Completamento 0-1, null se mancano i dati necessari
 export function completamento(s) {
   const forza = completamentoForza(s);
-  const cardio = presente(s.zonaPct) ? al1(num(s.zonaPct) / 100) : null;
+  const cardio = completamentoCardio(s);
   if (s.tipo === "forza") return forza;
   if (s.tipo === "cardio") return cardio;
   const pesi = num(s.minForza) + num(s.minCardio);

@@ -26,6 +26,10 @@ export function disegnaDettaglioEfficienza(contenitore, s) {
     const quota = Math.round((100 * s.minForza) / (s.minForza + s.minCardio));
     note.push(`Completamento pesato sul tempo previsto: forza ${quota}%, cardio ${100 - quota}%.`);
   }
+  if (s.regolaCardio === 2 && Number.isFinite(s.cardioMin) && Number.isFinite(s.zonaMin)) {
+    const base = Math.max(s.minCardio || 0, s.cardioMin).toLocaleString("it-IT");
+    note.push(`Cardio: ${s.zonaMin.toLocaleString("it-IT")} min in zona su ${base} (il maggiore tra previsti e svolti).`);
+  }
   if (suRipetizioni(s)) {
     note.push(`Nessun carico previsto: la forza è calcolata sulle ripetizioni (${s.ripEseguite} di ${s.ripPreviste}).`);
   } else if (s.tipo !== "cardio" && s.volumePrevisto === 0) {
