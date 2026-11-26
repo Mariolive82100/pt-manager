@@ -1,0 +1,82 @@
+/* P.T. Manager - pagina Nuovo allenamento */
+.pagina-allenamento {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+.testata-allenamento { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+a.btn { text-align: center; }
+a.btn-primary:hover { color: #fff; }
+
+/* Scelte a segmenti */
+.seg { display: flex; flex-wrap: wrap; align-self: flex-start; border: 1px solid var(--color-divider); }
+.seg label { position: relative; display: flex; }
+.seg input { position: absolute; opacity: 0; }
+.seg span { display: flex; align-items: center; min-height: 42px; padding: 0 var(--space-4); font-size: 14px; cursor: pointer; }
+.seg input:checked + span { background: var(--color-accent); color: #fff; }
+.seg input:focus-visible + span { outline: 2px solid var(--color-accent-900); outline-offset: -3px; }
+.seg input:disabled + span { cursor: not-allowed; opacity: 0.55; }
+
+.colonne { display: flex; flex-wrap: wrap; align-items: flex-start; gap: var(--space-6); }
+.colonna-moduli { flex: 2 1 560px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.colonna-moduli, .gruppo { display: flex; flex-direction: column; gap: var(--space-6); }
+.colonna-moduli > * + * { margin-top: 0; }
+#form-esercizio { gap: var(--space-3); }
+.colonna-lato { display: flex; flex-direction: column; gap: var(--space-4); flex: 1 1 300px; min-width: 0; }
+
+/* Elementi della scheda */
+.elementi { display: flex; flex-direction: column; margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--color-divider); }
+.elemento {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  padding: var(--space-3) 0 var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--color-divider);
+  border-left: 3px solid var(--color-divider);
+}
+.elemento-forza { border-left-color: var(--color-accent); }
+.elemento-num { font-family: var(--font-heading); font-size: 22px; font-weight: 600; line-height: 2; color: var(--color-accent-800); }
+.elemento-corpo { display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.elemento-testa { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.nome-elemento { flex: 1 1 180px; width: auto; min-width: 0; }
+.elemento-campi { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); }
+.mini { display: flex; flex-direction: column; gap: 2px; width: 92px; font-size: 11px; color: var(--color-neutral-700); }
+.zona-bpm { padding-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--color-accent-800); }
+.nota-riga { flex-basis: 100%; }
+.elemento-azioni { display: flex; align-items: flex-start; }
+.btn-icona { width: 40px; padding: 0; }
+
+.striscia { display: flex; gap: 2px; height: 14px; }
+.tratto { flex-basis: 0; min-width: 4px; border: 1px solid var(--color-accent); }
+.tratto-forza { background: var(--color-accent); }
+
+/* Colonna laterale */
+.sanitarie { border: 2px solid var(--color-accent-700); }
+.sanitarie-lista { display: flex; flex-direction: column; gap: var(--space-2); }
+.nota-sanitaria { display: flex; flex-direction: column; padding-bottom: var(--space-2); border-bottom: 1px solid var(--color-divider); overflow-wrap: anywhere; }
+.nota-sanitaria .nota-dettagli { font-size: 13px; white-space: pre-wrap; }
+.griglia-riepilogo { grid-template-columns: 1fr 1fr; }
+.azioni-salva { display: flex; flex-direction: column; gap: var(--space-2); }
+
+.rpe { display: grid; grid-template-columns: repeat(5, 1fr); max-width: 520px; border: 1px solid var(--color-divider); }
+.rpe button { min-height: 44px; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.rpe button[aria-pressed="true"] { background: var(--color-accent); color: #fff; }
+@media (min-width: 600px) { .rpe { grid-template-columns: repeat(10, 1fr); } }
+
+.esercizi-elenco { max-height: 220px; margin: 0; padding: 0; overflow-y: auto; list-style: none; }
+.esercizi-elenco li { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); border-bottom: 1px solid var(--color-divider); }
+
+/* Schermi stretti: le note sanitarie vengono prima del modulo */
+@media (max-width: 960px) {
+  .colonna-lato { display: contents; }
+  .colonna-moduli { flex-basis: 100%; }
+  .colonna-lato > * { width: 100%; }
+  .sanitarie { order: -1; }
+  .elemento { grid-template-columns: minmax(0, 1fr); }
+  .elemento-num { display: none; }
+  .elemento-azioni { justify-content: flex-end; }
+}

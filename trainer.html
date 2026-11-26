@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="css/salute.css">
   <link rel="stylesheet" href="css/misure.css">
   <link rel="stylesheet" href="css/livello.css">
+  <link rel="stylesheet" href="css/efficienza.css">
+  <link rel="stylesheet" href="css/allenamenti-tab.css">
 </head>
 <body>
   <nav class="nav">
@@ -57,12 +59,58 @@
               <span id="p-note" class="tag tag-neutral" hidden></span>
             </div>
           </div>
-          <button type="button" id="btn-modifica" class="btn">Modifica</button>
+          <div class="azioni-profilo">
+            <button type="button" id="btn-modifica" class="btn">Modifica</button>
+            <a id="btn-nuovo-allenamento" class="btn btn-primary" href="allenamento.html">+ Nuovo allenamento</a>
+          </div>
         </header>
+        <div id="kpi" class="griglia-dati"></div>
         <div id="p-dati" class="griglia-dati"></div>
 
         <div id="schede" class="schede"></div>
-        <div id="pannello-allenamenti" class="pannello"><p class="muted">In arrivo.</p></div>
+        <div id="pannello-allenamenti" class="pannello">
+          <div class="riga-tag">
+            <a id="btn-pianifica" class="btn" href="allenamento.html">+ Pianifica scheda</a>
+            <a id="btn-registra" class="btn" href="allenamento.html">+ Registra sessione</a>
+            <button type="button" id="btn-allenamenti-aggiorna" class="btn btn-ghost">Aggiorna</button>
+          </div>
+          <div id="allenamenti-stato" class="avviso">
+            <span id="allenamenti-stato-testo"></span>
+            <button type="button" id="btn-allenamenti-riprova" class="btn">Riprova</button>
+          </div>
+          <div id="allenamenti-contenuto" class="pannello" hidden>
+            <div class="card">
+              <span class="kicker">Schede da completare</span>
+              <span id="schede-vuoto" class="muted">Nessuna scheda in bozza o assegnata.</span>
+              <ul id="schede-lista" class="schede-lista"></ul>
+            </div>
+            <p id="sessioni-vuoto" class="muted">Nessuna sessione registrata.</p>
+            <div id="sessioni-blocco" class="pannello">
+              <div class="card">
+                <span class="kicker">Efficienza · ultime 10 sessioni</span>
+                <div id="andamento" class="andamento"></div>
+                <span class="muted">Pieno: forza · vuoto: cardio · tratteggiato: misto</span>
+              </div>
+              <div id="dettaglio" class="card">
+                <span id="dettaglio-titolo" class="kicker"></span>
+                <h3 id="dettaglio-nome"></h3>
+                <div id="dettaglio-efficienza" class="efficienza"></div>
+                <div id="dettaglio-dati" class="griglia-dati"></div>
+                <div id="dettaglio-azioni"></div>
+              </div>
+              <div>
+                <span class="kicker">Storico sessioni</span>
+                <div class="tabella-scorrevole">
+                  <table class="table tabella-sessioni">
+                    <thead><tr><th>Data</th><th>Sessione</th><th>Tempo · kcal</th><th>Carico</th><th>RPE</th><th>Eff.</th></tr></thead>
+                    <tbody id="sessioni-righe"></tbody>
+                  </table>
+                </div>
+                <span id="nota-parziali" class="muted" hidden>* efficienza parziale, calcolata senza kcal.</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <div id="pannello-salute" class="pannello" hidden>
           <form id="form-consenso" class="card">

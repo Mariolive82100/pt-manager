@@ -1,0 +1,14 @@
+/* Punteggio di efficienza */
+.efficienza { display: flex; flex-direction: column; gap: var(--space-3); }
+.punteggio { display: flex; align-items: flex-end; gap: var(--space-3); }
+.punteggio-numero {
+  font-family: var(--font-heading);
+  font-size: 68px;
+  font-weight: 600;
+  line-height: 0.85;
+  color: var(--color-accent-800);
+}
+.parte { display: flex; flex-direction: column; gap: 4px; }
+.parte-testa { display: flex; justify-content: space-between; gap: var(--space-2); font-size: 13px; }
+.barra { height: 6px; border: 1px solid var(--color-divider); }
+.barra div { height: 100%; background: var(--color-accent); }

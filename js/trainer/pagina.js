@@ -1,5 +1,6 @@
 // Avvio dell'area trainer e controllo del ruolo
-import { osservaAccesso, leggiProfilo, esci, messaggioErrore } from "../core/auth.js";
+import { osservaAccesso, leggiProfilo, esci } from "../core/auth.js";
+import { testoErrore } from "../core/errori.js";
 import { elencaAtleti, salvaAtleta, MASSIMO_ATLETI } from "../core/db-atleti.js";
 import { $, crea, avviso, iniziali } from "../core/ui.js";
 import {
@@ -14,6 +15,7 @@ import { avviaMisure, mostraMisure, schedaMisureVisibile, disegnaMisure } from "
 import { bmi } from "../core/calcoli-misure.js";
 import { avviaLivello, mostraLivello } from "./tab-livello.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
+import { avviaAllenamenti, mostraAllenamenti, dimenticaAllenamenti } from "./tab-allenamenti.js";
 
 let trainer = null;
 let atleti = [];
@@ -73,6 +75,7 @@ function apri(id) {
   mostraSalute(atleta);
   mostraMisure(atleta);
   mostraLivello(atleta);
+  mostraAllenamenti(atleta);
   mostra("profilo");
 }
 
@@ -83,13 +86,6 @@ function apriForm(id) {
   mostra("form");
   $("vista-form").scrollIntoView();
 }
-
-const ERRORI_ATLETA = {
-  "app/email-gia-usata": "Questa email è già assegnata a un altro atleta.",
-  "app/data-occupata": "Esiste già una rilevazione in questa data: modifica quella.",
-  "app/atleta-inesistente": "Questo atleta non esiste più. Ricarica la pagina."
-};
-const testoErrore = (e) => ERRORI_ATLETA[e?.code] || messaggioErrore(e);
 
 async function salva(dati) {
   const pulsante = $("btn-salva");
@@ -128,6 +124,7 @@ async function copiaLink() {
 }
 
 avviaElenco(apri);
+avviaAllenamenti({ testoErrore, alRiepilogo: () => aggiornaElenco(atleti, scelto) });
 avviaMisure({ testoErrore, alAggiornato: disegnaProfilo });
 avviaSalute({ testoErrore, alConsenso: disegnaMisure });
 avviaLivello({
@@ -146,6 +143,7 @@ $("btn-copia").addEventListener("click", copiaLink);
 avviaElimina({
   testoErrore,
   alEliminato: (id) => {
+    dimenticaAllenamenti(id);
     atleti = atleti.filter((a) => a.id !== id);
     apri(null);
     avviso("Atleta eliminato.");
@@ -164,7 +162,10 @@ osservaAccesso(async (user) => {
     $("caricamento").hidden = true;
     $("area").hidden = false;
     aggiornaElenco(atleti, scelto);
-    mostra("vuoto");
+    // Ritorno dalla pagina allenamento: riapre il profilo indicato
+    const richiesto = new URLSearchParams(location.hash.slice(1)).get("atleta");
+    if (richiesto && trova(richiesto)) apri(richiesto);
+    else mostra("vuoto");
     if (atleti.length === MASSIMO_ATLETI) {
       avviso(`Sono mostrati i primi ${MASSIMO_ATLETI} atleti.`);
     }

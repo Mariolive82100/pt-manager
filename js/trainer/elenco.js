@@ -1,14 +1,12 @@
 // Elenco atleti con ricerca e filtro per livello
 import { $, crea } from "../core/ui.js";
 import { LIVELLI, livelloEffettivo, nomeLivello } from "../core/calcoli.js";
+import { kpi } from "../core/calcoli-allenamento.js";
 
 const stato = { atleti: [], testo: "", livello: -1, scelto: null, alClic: () => {} };
 
-// Efficienza media dalle ultime sessioni ("–" se non ce ne sono)
-function efficienza(atleta) {
-  const valori = (atleta.riepilogo || []).map((s) => s.efficienza).filter(Number.isFinite);
-  return valori.length ? Math.round(valori.reduce((a, b) => a + b, 0) / valori.length) : "–";
-}
+// Efficienza media degli ultimi 30 giorni ("–" se non ci sono sessioni)
+const efficienza = (atleta) => kpi(atleta.riepilogo || []).efficienza ?? "–";
 
 function disegna() {
   const visibili = stato.atleti.filter((a) =>

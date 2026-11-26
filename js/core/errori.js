@@ -1,0 +1,14 @@
+// Messaggi di errore dell'area trainer
+import { messaggioErrore } from "./auth.js";
+
+const ERRORI = {
+  "app/email-gia-usata": "Questa email è già assegnata a un altro atleta.",
+  "app/data-occupata": "Esiste già una rilevazione in questa data: modifica quella.",
+  "app/atleta-inesistente": "Questo atleta non esiste più. Ricarica la pagina.",
+  "app/scheda-inesistente": "Questa scheda non esiste più. Ricarica la pagina.",
+  "app/scheda-completata": "Questa scheda risulta già completata o ritirata. Ricarica la pagina.",
+  "app/esercizio-presente": "Esiste già un esercizio con questo nome.",
+  "app/troppi-esercizi": "Hai raggiunto il numero massimo di esercizi personalizzati."
+};
+
+export const testoErrore = (e) => ERRORI[e?.code] || messaggioErrore(e);
