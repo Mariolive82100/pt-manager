@@ -7,6 +7,7 @@ import {
 } from "../core/calcoli.js";
 import { avviaElenco, aggiornaElenco } from "./elenco.js";
 import { avviaForm, compilaForm } from "./atleta-form.js";
+import "../core/versione.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 
 let trainer = null;

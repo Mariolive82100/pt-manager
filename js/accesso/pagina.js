@@ -4,6 +4,7 @@ import {
   inviaVerifica, controllaVerifica, recuperaPassword, esci,
   leggiProfilo, messaggioErrore
 } from "../core/auth.js";
+import "../core/versione.js";
 
 const $ = (id) => document.getElementById(id);
 const VISTE = ["caricamento", "accesso", "verifica", "non-abilitato", "entrato"];

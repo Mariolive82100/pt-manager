@@ -218,3 +218,4 @@ textarea.input { min-height: 90px; resize: vertical; }
   font-size: 12px;
   color: var(--color-neutral-700);
 }
+.versione { text-align: center; font-size: 11px; }
