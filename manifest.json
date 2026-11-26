@@ -1,0 +1,17 @@
+{
+  "name": "P.T. Manager",
+  "short_name": "P.T. Manager",
+  "description": "Gestione di atleti e allenamenti",
+  "lang": "it",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f2f2f3",
+  "theme_color": "#416180",
+  "icons": [
+    { "src": "icons/icona-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icona-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icona-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
