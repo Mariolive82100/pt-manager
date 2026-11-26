@@ -11,6 +11,7 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/trainer.css">
+  <link rel="stylesheet" href="css/salute.css">
 </head>
 <body>
   <nav class="nav">
@@ -51,11 +52,55 @@
               <span id="p-livello" class="tag tag-accent"></span>
               <span id="p-calcolato" class="tag tag-outline"></span>
               <span id="p-obiettivo" class="muted"></span>
+              <span id="p-note" class="tag tag-neutral" hidden></span>
             </div>
           </div>
           <button type="button" id="btn-modifica" class="btn">Modifica</button>
         </header>
         <div id="p-dati" class="griglia-dati"></div>
+
+        <div id="schede" class="schede"></div>
+        <div id="pannello-allenamenti" class="pannello"><p class="muted">In arrivo.</p></div>
+
+        <div id="pannello-salute" class="pannello" hidden>
+          <form id="form-consenso" class="card">
+            <span class="kicker">Consenso scritto ai dati sanitari</span>
+            <span id="consenso-stato"></span>
+            <div class="riga-consenso">
+              <label class="field">Data del modulo firmato<input id="consenso-data" class="input" type="date" min="2000-01-01" required></label>
+              <button type="submit" id="btn-consenso-salva" class="btn">Salva data</button>
+              <button type="button" id="btn-consenso-togli" class="btn btn-ghost">Togli</button>
+            </div>
+            <span class="muted">Promemoria: non sostituisce il modulo firmato.</span>
+          </form>
+
+          <div id="salute-stato" class="avviso">
+            <span id="salute-stato-testo"></span>
+            <button type="button" id="btn-salute-riprova" class="btn">Riprova</button>
+          </div>
+          <div><button type="button" id="btn-nuova-nota" class="btn btn-primary" disabled>+ Aggiungi nota</button></div>
+
+          <form id="form-nota" class="card" autocomplete="off" hidden>
+            <h3 id="titolo-nota"></h3>
+            <label class="field">Tipo *
+              <select class="input" name="tipo" required>
+                <option value="">Scegli…</option><option value="trauma">Trauma</option>
+                <option value="intervento">Intervento</option><option value="patologia">Patologia</option>
+              </select>
+            </label>
+            <label class="field">Titolo *<input class="input" name="titolo" maxlength="100" required></label>
+            <label class="field">Dettagli e cosa evitare<textarea class="input" name="dettagli" maxlength="1000"></textarea></label>
+            <div class="riga-tag">
+              <button type="submit" id="btn-nota-salva" class="btn btn-primary">Salva nota</button>
+              <button type="button" id="btn-nota-annulla" class="btn btn-ghost">Annulla</button>
+            </div>
+          </form>
+          <div id="gruppi-salute" class="gruppi-salute"></div>
+        </div>
+
+        <div id="pannello-misurazioni" class="pannello" hidden><p class="muted">In arrivo.</p></div>
+        <div id="pannello-livello" class="pannello" hidden><p class="muted">In arrivo.</p></div>
+
         <div class="card">
           <span class="kicker">Accesso dell'atleta</span>
           <span id="p-email"></span>

@@ -8,6 +8,8 @@ import {
 import { avviaElenco, aggiornaElenco } from "./elenco.js";
 import { avviaForm, compilaForm } from "./atleta-form.js";
 import "../core/versione.js";
+import { avviaSchede } from "./schede.js";
+import { avviaSalute, mostraSalute } from "./tab-salute.js";
 import { avviaElimina, chiediElimina } from "./atleta-elimina.js";
 
 let trainer = null;
@@ -63,6 +65,7 @@ function apri(id) {
   const atleta = trova(id);
   if (!atleta) return mostra("vuoto");
   disegnaProfilo(atleta);
+  mostraSalute(atleta);
   mostra("profilo");
 }
 
@@ -117,6 +120,8 @@ async function copiaLink() {
 }
 
 avviaElenco(apri);
+avviaSchede();
+avviaSalute({ testoErrore });
 avviaForm({ alSalva: salva, alAnnulla: () => apri(scelto) });
 $("btn-nuovo").addEventListener("click", () => apriForm(null));
 $("btn-modifica").addEventListener("click", () => apriForm(scelto));
