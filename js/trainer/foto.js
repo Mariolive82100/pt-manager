@@ -2,6 +2,7 @@
 import { $, crea, avviso } from "../core/ui.js";
 import { leggiFoto, salvaFoto, eliminaFoto } from "../core/db-foto.js";
 import { riduciFoto } from "../core/riduci-foto.js";
+import { FOTO_ATLETI } from "../core/funzioni.js";
 
 const lette = new Map(); // solo in memoria: evita di rileggere la stessa foto
 let atleta = null;
@@ -21,6 +22,7 @@ function disegna(stato) {
   const pronta = lette.has(atleta.id);
   $("btn-foto").textContent = valida ? "Cambia foto" : "Carica foto";
   $("btn-foto").disabled = occupato || !pronta;
+  $("btn-foto").hidden = !FOTO_ATLETI;
   $("btn-foto-togli").hidden = !dati;
   $("btn-foto-togli").disabled = occupato;
   $("foto-stato").textContent = stato ?? "";
@@ -63,12 +65,12 @@ async function esegui(attesa, azione) {
 export function avviaFoto({ testoErrore }) {
   alErrore = testoErrore;
   let perChi = null; // atleta per cui è stata aperta la scelta del file
-  $("btn-foto").addEventListener("click", () => {
+  if (FOTO_ATLETI) $("btn-foto").addEventListener("click", () => {
     perChi = atleta.id;
     $("foto-file").value = "";
     $("foto-file").click();
   });
-  $("foto-file").addEventListener("change", () => {
+  if (FOTO_ATLETI) $("foto-file").addEventListener("change", () => {
     const file = $("foto-file").files[0];
     if (!file || perChi !== atleta.id) return;
     esegui("Salvataggio…", async (id) => {
