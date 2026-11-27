@@ -45,6 +45,7 @@ a.btn-primary:hover { color: #fff; }
 .nome-elemento { flex: 1 1 180px; width: auto; min-width: 0; }
 .elemento-campi { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3); }
 .mini { display: flex; flex-direction: column; gap: 2px; width: 92px; font-size: 11px; color: var(--color-neutral-700); }
+.mini:has(select[name="modo"]) { width: 138px; }
 .zona-bpm { padding-bottom: 10px; font-size: 13px; font-weight: 700; color: var(--color-accent-800); }
 .nota-riga { flex-basis: 100%; }
 .elemento-azioni { display: flex; align-items: flex-start; }

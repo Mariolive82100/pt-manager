@@ -1,6 +1,6 @@
 // Punteggio di efficienza con le tre componenti (anteprima e dettaglio)
 import { crea } from "./ui.js";
-import { efficienza, giudizio, suRipetizioni } from "./calcoli-allenamento.js";
+import { efficienza, giudizio, suRipetizioni, conTempo } from "./calcoli-allenamento.js";
 
 const perCento = (x) => Math.round(x * 100) + "%";
 const COMPLETAMENTO = {
@@ -32,7 +32,9 @@ export function disegnaDettaglioEfficienza(contenitore, s) {
     const base = Math.max(s.minCardio || 0, s.cardioMin).toLocaleString("it-IT");
     note.push(`Cardio: ${s.zonaMin.toLocaleString("it-IT")} min in zona su ${base} (il maggiore tra previsti e svolti).`);
   }
-  if (suRipetizioni(s)) {
+  if (conTempo(s)) {
+    note.push(`Esercizi a tempo: ${s.roundEseguiti ?? "–"} di ${s.roundPrevisti} round. Il completamento della forza è pesato sulla durata prevista di ogni parte.`);
+  } else if (suRipetizioni(s)) {
     note.push(`Nessun carico previsto: la forza è calcolata sulle ripetizioni (${s.ripEseguite} di ${s.ripPreviste}).`);
   } else if (s.tipo !== "cardio" && s.volumePrevisto === 0) {
     note.push("Con volume previsto pari a zero il completamento non è calcolabile.");
@@ -45,7 +47,8 @@ export function disegnaDettaglioEfficienza(contenitore, s) {
         textContent: e.punteggio === null ? "dati insufficienti"
           : `su 100 · ${giudizio(e.punteggio)}${e.parziale ? " · parziale" : ""}`
       })),
-    parte(s.tipo === "forza" && suRipetizioni(s) ? "Ripetizioni completate" : COMPLETAMENTO[s.tipo], e.parziale ? "60%" : "45%", e.completamento),
+    parte(s.tipo === "forza" && conTempo(s) ? "Esercizi completati"
+      : s.tipo === "forza" && suRipetizioni(s) ? "Ripetizioni completate" : COMPLETAMENTO[s.tipo], e.parziale ? "60%" : "45%", e.completamento),
     parte("Rispetto dei tempi", e.parziale ? "40%" : "30%", e.tempi,
       s.minEffettivi && s.minPrevisti ? `${s.minEffettivi} min effettivi su ${s.minPrevisti} previsti` : ""),
     parte("Resa energetica", e.parziale ? "" : "25%", e.energia,

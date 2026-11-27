@@ -1,7 +1,7 @@
 // Pianificazione: durata prevista, riepilogo dal vivo, controlli e dati da salvare
 import { $, crea } from "../core/ui.js";
 import {
-  volume, serieTotali, stimaMinuti, stimaKcal, percentualeDaCarico
+  volume, serieTotali, stimaMinuti, stimaKcal, percentualeDaCarico, aTempo, roundATempo
 } from "../core/calcoli-allenamento.js";
 import { st, elementi, massimale, haForza, haCardio } from "./stato.js";
 
@@ -29,6 +29,7 @@ export function aggiornaRiepilogoPiano() {
   if (haForza()) {
     voci.push(["Esercizi", lista.filter((e) => e.k === "forza").length],
       ["Serie totali", serieTotali(lista)], ["Volume", migliaia(volume(lista)) + " kg"]);
+    if (roundATempo(lista)) voci.push(["di cui round a tempo", roundATempo(lista)]);
   }
   if (haCardio()) voci.push(["Blocchi cardio", lista.filter((e) => e.k === "cardio").length]);
   voci.push(["Durata prevista", totale + " min"]);
@@ -54,7 +55,14 @@ export function problemaScheda() {
     const n = `Riga ${i + 1}: `;
     if (!e.nome.trim()) return n + (e.k === "forza" ? "scegli l'esercizio." : "dai un nome al blocco.");
     if (e.k === "forza") {
-      if (!intero(e.serie, 1) || !intero(e.rip, 1)) return n + "serie e ripetizioni devono essere numeri interi.";
+      if (aTempo(e)) {
+        if (!intero(e.serie, 1) || !intero(e.lavoro, 1) || e.lavoro > 3600) {
+          return n + "indica round e secondi di lavoro con numeri interi.";
+        }
+        if (e.rip !== null && !intero(e.rip, 1)) return n + "le ripetizioni obiettivo sono un numero intero, oppure vuote.";
+      } else if (!intero(e.serie, 1) || !intero(e.rip, 1)) {
+        return n + "serie e ripetizioni devono essere numeri interi.";
+      }
       if ((e.kg ?? 0) < 0) return n + "il carico non può essere negativo.";
       if (!(e.recupero >= 0) || e.recupero === null) return n + "indica il recupero (anche 0).";
     } else if (!intero(e.rip, 1) || !(e.minuti > 0)) {
@@ -73,6 +81,7 @@ function pulito(e) {
   }
   const kg = e.kg ?? 0;
   return {
+    ...(aTempo(e) ? { modo: e.modo, lavoro: e.lavoro } : {}),
     k: e.k, nome: e.nome, rm: e.rm, serie: e.serie, rip: e.rip, kg,
     pct: percentualeDaCarico(kg, massimale(e.rm)), recupero: e.recupero
   };

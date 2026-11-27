@@ -1,6 +1,6 @@
 // Allenamento in corso: cronometro, serie e blocchi
 import { $, crea } from "../core/ui.js";
-import { testoZona } from "../core/calcoli-allenamento.js";
+import { testoZona, aTempo } from "../core/calcoli-allenamento.js";
 import { nuovaBozza, bozzaValida } from "../core/sessione-atleta.js";
 import { leggiBozza, salvaBozza, cancellaBozza } from "./bozza-locale.js";
 
@@ -60,15 +60,21 @@ function cartaElemento(e, i, fcMax) {
         `${e.rip > 1 ? e.rip + " × " : ""}${e.minuti} min · Z${e.zona} · ${testoZona(e.zona, fcMax)}` }),
       spunta(stato.fatto, "Segna come svolto", (v) => { stato.fatto = v; }, "✓ Svolto"));
   }
+  const tempo = aTempo(e);
   return crea("article", { className: "card esercizio" },
     crea("h4", { textContent: e.nome }),
-    crea("span", { className: "muted", textContent:
-      `${e.serie} × ${e.rip} · recupero ${e.recupero} s` }),
+    crea("span", { className: "muted", textContent: tempo
+      ? `${e.serie} round × ${e.lavoro} s di lavoro · recupero ${e.recupero} s` +
+        (e.rip ? ` · obiettivo ${e.rip} rip.` : "")
+      : `${e.serie} × ${e.rip} · recupero ${e.recupero} s` }),
+    tempo ? crea("span", { className: "muted", textContent:
+      "Segna i round svolti. Le ripetizioni sono facoltative." }) : null,
     ...stato.serie.map((s, n) => crea("div", { className: "serie" },
       crea("span", { className: "serie-num", textContent: n + 1 }),
       inputSerie(s, "rip", "Rip.", 1),
       inputSerie(s, "kg", "Kg", 0.5),
-      spunta(s.fatta, "Fatta?", (v) => { s.fatta = v; }))));
+      spunta(s.fatta, tempo ? "Fatto?" : "Fatta?", (v) => { s.fatta = v; },
+        tempo ? "✓ Fatto" : "✓ Fatta"))));
 }
 
 // Inizia un nuovo allenamento o riprende quello salvato
