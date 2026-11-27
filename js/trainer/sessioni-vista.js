@@ -30,7 +30,7 @@ function barra(s, scelta, seleziona) {
   return b;
 }
 
-function dettaglio(s, alElimina) {
+function dettaglio(s, azioni) {
   $("dettaglio-titolo").textContent = `Dettaglio · ${dataItaliana(s.data)}`;
   $("dettaglio-nome").textContent = s.nome;
   disegnaDettaglioEfficienza($("dettaglio-efficienza"), s);
@@ -51,17 +51,21 @@ function dettaglio(s, alElimina) {
     crea("span", { textContent: e }), crea("strong", { textContent: v }))));
   $("dettaglio-svolto").replaceChildren(...(s.dettaglio ? [elencoSvolto(s.dettaglio)] : []));
   const b = crea("button", { type: "button", className: "btn btn-ghost", textContent: "Elimina sessione" });
-  b.addEventListener("click", () => alElimina(s, b));
-  $("dettaglio-azioni").replaceChildren(b);
+  b.addEventListener("click", () => azioni.elimina(s, b));
+  // Si duplica la scheda collegata: una sessione libera non ne ha una
+  const copia = s.schedaId ? crea("a", {
+    className: "btn", textContent: "Duplica scheda", href: azioni.copia(s.schedaId)
+  }) : null;
+  $("dettaglio-azioni").replaceChildren(...[copia, b].filter(Boolean));
 }
 
 // sessioni: dalla più recente alla più vecchia
-export function disegnaSessioni(sessioni, alElimina, scelta = sessioni[0]?.id) {
+export function disegnaSessioni(sessioni, azioni, scelta = sessioni[0]?.id) {
   const vuoto = !sessioni.length;
   $("sessioni-vuoto").hidden = !vuoto;
   $("sessioni-blocco").hidden = vuoto;
   if (vuoto) return;
-  const seleziona = (id) => disegnaSessioni(sessioni, alElimina, id);
+  const seleziona = (id) => disegnaSessioni(sessioni, azioni, id);
   $("andamento").replaceChildren(
     ...sessioni.slice(0, 10).reverse().map((s) => barra(s, scelta, seleziona)));
 
@@ -83,5 +87,5 @@ export function disegnaSessioni(sessioni, alElimina, scelta = sessioni[0]?.id) {
     return riga;
   }));
   $("nota-parziali").hidden = !sessioni.some((s) => s.parziale);
-  dettaglio(sessioni.find((s) => s.id === scelta) || sessioni[0], alElimina);
+  dettaglio(sessioni.find((s) => s.id === scelta) || sessioni[0], azioni);
 }

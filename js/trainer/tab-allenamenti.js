@@ -16,9 +16,9 @@ let alRiepilogo = () => {};
 const dataItaliana = (iso) => iso.split("-").reverse().join("/");
 const it = (n) => n.toLocaleString("it-IT");
 
-function indirizzo(modo, idScheda) {
+function indirizzo(modo, idScheda, chiave = "scheda") {
   const p = new URLSearchParams({ atleta: atleta.id, modo });
-  if (idScheda) p.set("scheda", idScheda);
+  if (idScheda) p.set(chiave, idScheda);
   return "allenamento.html?" + p;
 }
 
@@ -47,6 +47,8 @@ function pulsante(testo, funzione) {
   return b;
 }
 
+const indirizzoCopia = (idScheda) => indirizzo("pianifica", idScheda, "copia");
+
 function rigaScheda(s) {
   const assegnata = s.stato === "assegnata";
   return crea("li", { className: "riga-scheda" },
@@ -61,6 +63,7 @@ function rigaScheda(s) {
     crea("div", { className: "riga-tag" },
       crea("a", { className: "btn btn-ghost", textContent: "Modifica", href: indirizzo("pianifica", s.id) }),
       assegnata ? crea("a", { className: "btn btn-ghost", textContent: "Registra", href: indirizzo("registra", s.id) }) : null,
+      crea("a", { className: "btn btn-ghost", textContent: "Duplica", href: indirizzoCopia(s.id) }),
       pulsante("Elimina", (b) => rimuoviScheda(s, b))));
 }
 
@@ -75,7 +78,7 @@ function disegna(errore = false) {
   const aperte = dati.schede.filter((s) => s.stato !== "completata");
   $("schede-vuoto").hidden = aperte.length > 0;
   $("schede-lista").replaceChildren(...aperte.map(rigaScheda));
-  disegnaSessioni(dati.sessioni, rimuoviSessione);
+  disegnaSessioni(dati.sessioni, { elimina: rimuoviSessione, copia: indirizzoCopia });
 }
 
 async function carica(forza = false) {

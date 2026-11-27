@@ -6,6 +6,7 @@ const ERRORI = {
   "app/data-occupata": "Esiste già una rilevazione in questa data: modifica quella.",
   "app/atleta-inesistente": "Questo atleta non esiste più. Ricarica la pagina.",
   "app/scheda-inesistente": "Questa scheda non esiste più. Ricarica la pagina.",
+  "app/copia-inesistente": "La scheda da duplicare non esiste più. Torna al profilo dell'atleta.",
   "app/scheda-completata": "Questa scheda risulta già completata o ritirata. Ricarica la pagina.",
   "app/foto-non-leggibile": "Immagine non leggibile. Usa una foto in formato JPG o PNG.",
   "app/foto-troppo-pesante": "Non riesco a ridurre abbastanza questa foto: scegline un'altra.",

@@ -197,6 +197,22 @@ function collega() {
   window.addEventListener("beforeunload", (ev) => { if (modificata) ev.preventDefault(); });
 }
 
+// Duplica: la scheda di partenza resta com'è; la copia è una scheda nuova,
+// salvata solo con "Assegna" o "Salva come bozza". Vale solo per lo stesso atleta
+async function preparaCopia(idAtleta, idCopia) {
+  const origine = await leggiScheda(idAtleta, idCopia);
+  if (!origine) throw { code: "app/copia-inesistente" };
+  caricaScheda(origine);
+  $("f-nome").value = origine.nome;
+  nomeScritto = true;
+  $("f-atleta").disabled = true;
+  document.querySelector("[name=modo][value=registra]").disabled = true;
+  $("avviso-copia").textContent = `Copia di "${origine.nome}" del ` +
+    `${origine.data.split("-").reverse().join("/")}. Non è ancora salvata: controlla data, ` +
+    "carichi, note per l'atleta e note sanitarie, poi assegnala o salvala come bozza.";
+  $("avviso-copia").hidden = false;
+}
+
 async function prepara() {
   atleti = await elencaAtleti();
   const richiesto = parametri.get("atleta");
@@ -224,6 +240,8 @@ async function prepara() {
     // Mentre si modifica una scheda non si cambia modalità: eviterebbe errori
     document.querySelector("[name=modo][value=registra]").disabled = true;
   }
+  const idCopia = parametri.get("copia") || "";
+  if (idCopia && !idScheda && piano()) await preparaCopia(atleta.id, idCopia);
 
   collega();
   $("caricamento").hidden = true;
