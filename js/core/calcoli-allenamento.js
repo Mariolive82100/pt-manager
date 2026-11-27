@@ -10,18 +10,27 @@ const somma = (lista, f) => lista.reduce((s, x) => s + f(x), 0);
 const al1 = (v) => Math.min(1, Math.max(0, v));
 const diTipo = (elementi, k) => elementi.filter((e) => e.k === k);
 
+// Esercizio di forza "A tempo": round da tot secondi, ripetizioni solo come obiettivo
+export const aTempo = (e) => e.k === "forza" && e.modo === "tempo";
+const aRipetizioni = (elementi) => diTipo(elementi, "forza").filter((e) => !aTempo(e));
+
+// Volume e ripetizioni riguardano solo gli esercizi a ripetizioni
 export const volume = (elementi) => Math.round(somma(
-  diTipo(elementi, "forza"), (e) => num(e.serie) * num(e.rip) * num(e.kg)));
+  aRipetizioni(elementi), (e) => num(e.serie) * num(e.rip) * num(e.kg)));
 
 export const ripetizioni = (elementi) =>
-  somma(diTipo(elementi, "forza"), (e) => num(e.serie) * num(e.rip));
+  somma(aRipetizioni(elementi), (e) => num(e.serie) * num(e.rip));
+
+export const roundATempo = (elementi) =>
+  somma(elementi.filter(aTempo), (e) => num(e.serie));
 
 export const serieTotali = (elementi) =>
   somma(diTipo(elementi, "forza"), (e) => num(e.serie));
 
-// Durata di un elemento in minuti. Forza: 40 secondi per serie più recupero
+// Durata di un elemento in minuti. Forza: 40 secondi per serie più recupero,
+// oppure i secondi di lavoro negli esercizi a tempo
 export const minutiElemento = (e) => (e.k === "forza"
-  ? (num(e.serie) * (SECONDI_SERIE + num(e.recupero))) / 60
+  ? (num(e.serie) * ((aTempo(e) ? num(e.lavoro) : SECONDI_SERIE) + num(e.recupero))) / 60
   : num(e.rip) * num(e.minuti));
 
 // Stima in minuti interi di una parte ("forza" o "cardio")
@@ -54,12 +63,59 @@ export const caricoDaPercentuale = (pct, massimale) =>
 
 const presente = (v) => v !== null && v !== undefined && v !== "";
 
+// Media dei completamenti (0-1) pesata sui minuti previsti; null se mancano dati
+export function mediaPesata(parti) {
+  const valide = parti.filter((p) => p.peso > 0);
+  const pesi = somma(valide, (p) => p.peso);
+  if (!pesi || valide.some((p) => p.valore === null)) return null;
+  return al1(somma(valide, (p) => al1(p.valore) * p.peso) / pesi);
+}
+
+// Completamento forza dall'allenamento dell'atleta, esercizio per esercizio.
+// serieSvolte[i] = serie (o round) registrate per elementi[i]
+export function completamentoPerEsercizio(elementi, serieSvolte) {
+  return mediaPesata(elementi.map((e, i) => {
+    if (e.k !== "forza") return { peso: 0, valore: null };
+    const fatte = (serieSvolte[i] || []).filter((s) => s.fatta);
+    let valore;
+    if (aTempo(e)) valore = fatte.length / num(e.serie);
+    else if (num(e.kg) > 0) {
+      valore = somma(fatte, (s) => num(s.rip) * num(s.kg)) / (num(e.serie) * num(e.rip) * num(e.kg));
+    } else valore = somma(fatte, (s) => num(s.rip)) / (num(e.serie) * num(e.rip));
+    return { peso: minutiElemento(e), valore: al1(valore) };
+  }));
+}
+
+// Registrazione del trainer: due gruppi (a ripetizioni e a tempo), pesati sulla durata.
+// Restituisce null se mancano dati
+export function completamentoPerGruppi(elementi, dati) {
+  const minuti = (lista) => somma(lista, minutiElemento);
+  const altri = aRipetizioni(elementi);
+  const tempo = elementi.filter(aTempo);
+  let valoreAltri = null;
+  if (num(dati.volumePrevisto) > 0 && presente(dati.volumeEseguito)) {
+    valoreAltri = num(dati.volumeEseguito) / num(dati.volumePrevisto);
+  } else if (num(dati.ripPreviste) > 0 && presente(dati.ripEseguite)) {
+    valoreAltri = num(dati.ripEseguite) / num(dati.ripPreviste);
+  }
+  const previsti = roundATempo(elementi);
+  return mediaPesata([
+    { peso: minuti(altri), valore: valoreAltri },
+    { peso: minuti(tempo),
+      valore: presente(dati.roundEseguiti) && previsti ? num(dati.roundEseguiti) / previsti : null }
+  ]);
+}
+
+// Sessioni con esercizi a tempo: il completamento forza è già pesato (compForza)
+export const conTempo = (s) => s.tipo !== "cardio" && num(s.roundPrevisti) > 0;
+
 // Senza carichi previsti (corpo libero) la forza si misura in ripetizioni
-export const suRipetizioni = (s) => s.tipo !== "cardio" &&
+export const suRipetizioni = (s) => s.tipo !== "cardio" && !conTempo(s) &&
   presente(s.volumePrevisto) && num(s.volumePrevisto) === 0 &&
   num(s.ripPreviste) > 0 && presente(s.ripEseguite);
 
 function completamentoForza(s) {
+  if (conTempo(s)) return presente(s.compForza) ? al1(num(s.compForza)) : null;
   if (suRipetizioni(s)) return al1(num(s.ripEseguite) / num(s.ripPreviste));
   return num(s.volumePrevisto) > 0 && presente(s.volumeEseguito)
     ? al1(num(s.volumeEseguito) / num(s.volumePrevisto)) : null;

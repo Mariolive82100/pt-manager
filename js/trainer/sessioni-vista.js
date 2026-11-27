@@ -10,7 +10,10 @@ const presente = (v) => v !== null && v !== undefined;
 
 function carico(s) {
   const voci = [];
-  if (presente(s.volumeEseguito)) voci.push(it(s.volumeEseguito) + " kg");
+  if (presente(s.volumeEseguito) && !(s.roundPrevisti && !s.volumePrevisto)) {
+    voci.push(it(s.volumeEseguito) + " kg");
+  }
+  if (s.roundPrevisti) voci.push(`${s.roundEseguiti} / ${s.roundPrevisti} round`);
   if (presente(s.km)) voci.push(it(s.km) + " km");
   if (!voci.length && presente(s.zonaPct)) voci.push(s.zonaPct + "% in zona");
   return voci.join(" · ") || "–";
@@ -35,8 +38,11 @@ function dettaglio(s, azioni) {
   $("dettaglio-nome").textContent = s.nome;
   disegnaDettaglioEfficienza($("dettaglio-efficienza"), s);
   const dati = [["Durata", s.minEffettivi + " min"], ["Kcal", presente(s.kcal) ? it(s.kcal) : "–"]];
-  if (presente(s.volumeEseguito)) dati.push(["Volume", `${it(s.volumeEseguito)} / ${it(s.volumePrevisto)} kg`]);
-  if (s.volumePrevisto === 0 && presente(s.ripEseguite)) {
+  if (presente(s.volumeEseguito) && !(s.roundPrevisti && !s.volumePrevisto)) {
+    dati.push(["Volume", `${it(s.volumeEseguito)} / ${it(s.volumePrevisto)} kg`]);
+  }
+  if (s.roundPrevisti) dati.push(["Round a tempo", `${it(s.roundEseguiti)} / ${it(s.roundPrevisti)}`]);
+  if (s.volumePrevisto === 0 && s.ripPreviste > 0 && presente(s.ripEseguite)) {
     dati.push(["Ripetizioni", `${it(s.ripEseguite)} / ${it(s.ripPreviste)}`]);
   }
   if (presente(s.zonaPct)) dati.push(["Tempo in zona", s.zonaPct + "%"]);

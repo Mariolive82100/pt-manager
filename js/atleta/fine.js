@@ -1,9 +1,10 @@
 // Fine allenamento: dati finali, anteprima e invio al trainer
 import { $, crea } from "../core/ui.js";
 import {
-  componiSessione, problemaInvio, minutiTrascorsi, nonSpuntati, volumeEseguito, ripetizioniEseguite
+  componiSessione, problemaInvio, minutiTrascorsi, nonSpuntati, volumeEseguito, ripetizioniEseguite,
+  roundEseguiti
 } from "../core/sessione-atleta.js";
-import { ripetizioni } from "../core/calcoli-allenamento.js";
+import { ripetizioni, roundATempo } from "../core/calcoli-allenamento.js";
 import { disegnaDettaglioEfficienza } from "../core/vista-efficienza.js";
 import { inviaSessione } from "../core/db-atleta.js";
 import { testoErrore } from "../core/errori.js";
@@ -34,6 +35,18 @@ function aggiorna() {
   disegnaDettaglioEfficienza($("anteprima"), componiSessione(scheda, bozza, valori()));
 }
 
+function riassuntoForza(s, b) {
+  const voci = [];
+  if (s.volumeKg > 0) {
+    voci.push(`Volume eseguito: ${volumeEseguito(s, b).toLocaleString("it-IT")} kg (previsto ${s.volumeKg.toLocaleString("it-IT")} kg)`);
+  } else if (ripetizioni(s.elementi)) {
+    voci.push(`Ripetizioni eseguite: ${ripetizioniEseguite(s, b)} di ${ripetizioni(s.elementi)}`);
+  }
+  const round = roundATempo(s.elementi);
+  if (round) voci.push(`Round a tempo svolti: ${roundEseguiti(s, b)} di ${round}`);
+  return voci.join(" · ");
+}
+
 export function apriFine(s, b, fine) {
   scheda = s;
   bozza = b;
@@ -42,9 +55,7 @@ export function apriFine(s, b, fine) {
   $("f-durata").value = minutiTrascorsi(b.inizio, fine);
   ["f-cardio-box", "f-zona-box", "f-km-box"].forEach((id) => { $(id).hidden = s.tipo === "forza"; });
   $("fine-volume").hidden = s.tipo === "cardio";
-  $("fine-volume").textContent = s.volumeKg > 0
-    ? `Volume eseguito: ${volumeEseguito(b).toLocaleString("it-IT")} kg (previsto ${s.volumeKg.toLocaleString("it-IT")} kg)`
-    : `Ripetizioni eseguite: ${ripetizioniEseguite(b)} di ${ripetizioni(s.elementi)}`;
+  $("fine-volume").textContent = riassuntoForza(s, b);
   errore("");
   aggiorna();
 }
@@ -55,7 +66,7 @@ async function invia() {
   const problema = problemaInvio(scheda, v);
   if (problema) return errore(problema);
   const { serie, blocchi } = nonSpuntati(bozza);
-  const mancanti = [serie ? `serie: ${serie}` : "", blocchi ? `blocchi cardio: ${blocchi}` : ""]
+  const mancanti = [serie ? `serie o round: ${serie}` : "", blocchi ? `blocchi cardio: ${blocchi}` : ""]
     .filter(Boolean).join(", ");
   if (!confirm((mancanti ? `Non hai spuntato (${mancanti}). ` : "") +
     "Inviare al trainer? Dopo l'invio non potrai modificare.")) return;

@@ -12,6 +12,8 @@ const ETICHETTE = {
   creatoIl: "Creato il", aggiornatoIl: "Aggiornato il", accettato: "Accettato",
   versione: "Versione dell'informativa", data: "Data", tipo: "Tipo", titolo: "Titolo",
   dettagli: "Dettagli", stato: "Stato", elementi: "Esercizi e blocchi", dettaglio: "Dettaglio svolto",
+  modo: "Modalità", lavoro: "Lavoro per round (s)", roundPrevisti: "Round a tempo previsti",
+  roundEseguiti: "Round a tempo svolti", compForza: "Completamento forza (0-1)",
   k: "Parte", rm: "Massimale collegato", serie: "Serie", rip: "Ripetizioni", kg: "Carico (kg)",
   pct: "% del massimale", recupero: "Recupero (s)", minuti: "Minuti", zona: "Zona FC",
   fatta: "Serie svolta", fatto: "Blocco svolto", note: "Note", origine: "Inserita da",

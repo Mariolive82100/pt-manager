@@ -1,6 +1,8 @@
 // Registrazione di una sessione svolta con anteprima dell'efficienza
 import { $, crea } from "../core/ui.js";
-import { efficienza, ripetizioni } from "../core/calcoli-allenamento.js";
+import {
+  efficienza, ripetizioni, aTempo, roundATempo, completamentoPerGruppi
+} from "../core/calcoli-allenamento.js";
 import { elencaSchede } from "../core/db-allenamenti.js";
 import { st, haForza, haCardio } from "./stato.js";
 import { disegnaDettaglioEfficienza } from "../core/vista-efficienza.js";
@@ -14,9 +16,14 @@ let alCambio = () => {};
 
 const numero = (id) => ($(id).value === "" ? null : Number($(id).value));
 export const schedaScelta = () => scelta;
+const elementiScelti = () => (haForza() && scelta ? scelta.elementi : []);
+const roundScheda = () => roundATempo(elementiScelti());
+// false se la scheda scelta ha solo esercizi a tempo: volume e ripetizioni non servono
+const conAltri = () => haForza() &&
+  (!roundScheda() || elementiScelti().some((e) => e.k === "forza" && !aTempo(e)));
 // Con volume previsto 0 (corpo libero) servono le ripetizioni
-const senzaCarico = () => haForza() && numero("r-volume-prev") === 0;
-const CAMPI_EFFETTIVI = ["r-effettivi", "r-kcal", "r-volume", "r-rip", "r-zona", "r-km"];
+const senzaCarico = () => conAltri() && numero("r-volume-prev") === 0;
+const CAMPI_EFFETTIVI = ["r-effettivi", "r-kcal", "r-volume", "r-rip", "r-round", "r-zona", "r-km"];
 
 export function datiSessione() {
   const forza = haForza();
@@ -30,14 +37,19 @@ export function datiSessione() {
     minForza: minForza || 0, minCardio: minCardio || 0,
     minPrevisti: misto ? (minForza || 0) + (minCardio || 0) : numero("r-previsti"),
     minEffettivi: numero("r-effettivi"), kcal: numero("r-kcal"),
-    volumePrevisto: forza ? numero("r-volume-prev") : null,
-    volumeEseguito: forza ? numero("r-volume") : null,
+    volumePrevisto: !forza ? null : conAltri() ? numero("r-volume-prev") : 0,
+    volumeEseguito: !forza ? null : conAltri() ? numero("r-volume") : 0,
     ripPreviste: senzaCarico() ? numero("r-rip-prev") : null,
     ripEseguite: senzaCarico() ? numero("r-rip") : null,
     zonaPct: cardio ? numero("r-zona") : null,
     km: cardio ? numero("r-km") : null,
     rpe
   };
+  if (roundScheda()) {
+    dati.roundPrevisti = roundScheda();
+    dati.roundEseguiti = numero("r-round");
+    dati.compForza = completamentoPerGruppi(scelta.elementi, dati);
+  }
   const e = efficienza(dati);
   return { ...dati, efficienza: e.punteggio, parziale: e.parziale };
 }
@@ -55,8 +67,10 @@ export function problemaSessione() {
   if (senzaCarico() && !(d.ripPreviste > 0 && d.ripEseguite !== null)) {
     return "Senza carichi indica le ripetizioni previste ed eseguite.";
   }
+  if (d.roundPrevisti && d.roundEseguiti === null) return "Indica i round a tempo eseguiti.";
   if (haCardio() && d.zonaPct === null) return "Indica la percentuale di tempo in zona FC.";
-  const negativi = [d.kcal, d.volumePrevisto, d.volumeEseguito, d.ripEseguite, d.km, d.zonaPct]
+  const negativi = [d.kcal, d.volumePrevisto, d.volumeEseguito, d.ripEseguite, d.roundEseguiti ?? null,
+    d.km, d.zonaPct]
     .some((v) => v !== null && v < 0);
   if (negativi || d.zonaPct > 100) return "Controlla i valori: niente numeri negativi, zona al massimo 100%.";
   if (d.rpe === null) return "Seleziona la fatica percepita (RPE).";
@@ -68,7 +82,9 @@ export function aggiornaRegistrazione() {
   $("r-previsti-box").hidden = misto;
   $("r-prev-forza-box").hidden = !misto;
   $("r-prev-cardio-box").hidden = !misto;
-  ["r-volume-prev-box", "r-volume-box"].forEach((id) => { $(id).hidden = !haForza(); });
+  ["r-volume-prev-box", "r-volume-box"].forEach((id) => { $(id).hidden = !conAltri(); });
+  ["r-round-prev-box", "r-round-box"].forEach((id) => { $(id).hidden = !roundScheda(); });
+  $("r-round-prev").value = roundScheda() || "";
   ["r-rip-prev-box", "r-rip-box"].forEach((id) => { $(id).hidden = !senzaCarico(); });
   ["r-zona-box", "r-km-box"].forEach((id) => { $(id).hidden = !haCardio(); });
   [...$("rpe").children].forEach((b, i) => b.setAttribute("aria-pressed", String(rpe === i + 1)));

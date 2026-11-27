@@ -1,5 +1,7 @@
 // Allenamento svolto dall'atleta: calcoli e dati da inviare (nessuna grafica)
-import { efficienza, isoLocale, ripetizioni } from "./calcoli-allenamento.js";
+import {
+  efficienza, isoLocale, ripetizioni, aTempo, roundATempo, completamentoPerEsercizio
+} from "./calcoli-allenamento.js";
 
 const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : 0);
 
@@ -7,7 +9,9 @@ const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Number(v) : 0)
 // Elenco esplicito dei campi: il database non conserva il loro ordine
 export function impronta(s) {
   const testo = JSON.stringify([s.tipo, s.minForza, s.minCardio, s.volumeKg,
-    s.elementi.map((e) => [e.k, e.nome, e.serie, e.rip, e.kg, e.recupero, e.minuti, e.zona])]);
+    // I campi "a tempo" si aggiungono solo se presenti: le altre schede non cambiano codice
+    s.elementi.map((e) => [e.k, e.nome, e.serie, e.rip, e.kg, e.recupero, e.minuti, e.zona,
+      ...(aTempo(e) ? [e.modo, e.lavoro] : [])])]);
   let h = 5381;
   for (const c of testo) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0;
   return h.toString(36);
@@ -18,7 +22,9 @@ export function nuovaBozza(uid, atletaId, scheda, adesso = Date.now()) {
   return {
     uid, atletaId, schedaId: scheda.id, impronta: impronta(scheda), inizio: adesso,
     stato: scheda.elementi.map((e) => (e.k === "forza"
-      ? { serie: Array.from({ length: e.serie }, () => ({ rip: e.rip, kg: e.kg, fatta: false })) }
+      // A tempo le ripetizioni partono vuote: si scrivono solo quelle contate davvero
+      ? { serie: Array.from({ length: e.serie },
+        () => ({ rip: aTempo(e) ? null : e.rip, kg: e.kg, fatta: false })) }
       : { fatto: false }))
   };
 }
@@ -27,12 +33,17 @@ export const bozzaValida = (bozza, scheda) =>
   bozza.schedaId === scheda.id && bozza.impronta === impronta(scheda) &&
   Array.isArray(bozza.stato) && bozza.stato.length === scheda.elementi.length;
 
-export const volumeEseguito = (bozza) => Math.round(bozza.stato.reduce(
-  (t, e) => t + (e.serie || []).filter((s) => s.fatta)
-    .reduce((p, s) => p + num(s.rip) * num(s.kg), 0), 0));
+// Serie registrate per gli esercizi a tempo (true) o a ripetizioni (false)
+const serieDi = (scheda, bozza, tempo) => bozza.stato.flatMap((e, i) =>
+  (aTempo(scheda.elementi[i]) === tempo ? e.serie || [] : [])).filter((s) => s.fatta);
 
-export const ripetizioniEseguite = (bozza) => bozza.stato.reduce(
-  (t, e) => t + (e.serie || []).filter((s) => s.fatta).reduce((p, s) => p + num(s.rip), 0), 0);
+export const volumeEseguito = (scheda, bozza) => Math.round(
+  serieDi(scheda, bozza, false).reduce((t, s) => t + num(s.rip) * num(s.kg), 0));
+
+export const ripetizioniEseguite = (scheda, bozza) =>
+  serieDi(scheda, bozza, false).reduce((t, s) => t + num(s.rip), 0);
+
+export const roundEseguiti = (scheda, bozza) => serieDi(scheda, bozza, true).length;
 
 // Cosa non risulta spuntato, per avvisare prima dell'invio
 export function nonSpuntati(bozza) {
@@ -67,6 +78,7 @@ export function problemaInvio(scheda, valori) {
 export function componiSessione(scheda, bozza, valori) {
   const forza = scheda.tipo !== "cardio";
   const cardio = scheda.tipo !== "forza";
+  const round = forza ? roundATempo(scheda.elementi) : 0;
   const dati = {
     data: isoLocale(new Date(bozza.inizio)), nome: scheda.nome, tipo: scheda.tipo,
     origine: "atleta", schedaId: scheda.id,
@@ -74,9 +86,13 @@ export function componiSessione(scheda, bozza, valori) {
     minPrevisti: scheda.durataMin, minEffettivi: valori.minEffettivi,
     kcal: valori.kcal ?? null,
     volumePrevisto: forza ? scheda.volumeKg : null,
-    volumeEseguito: forza ? volumeEseguito(bozza) : null,
+    volumeEseguito: forza ? volumeEseguito(scheda, bozza) : null,
     ripPreviste: forza ? ripetizioni(scheda.elementi) : null,
-    ripEseguite: forza ? ripetizioniEseguite(bozza) : null,
+    ripEseguite: forza ? ripetizioniEseguite(scheda, bozza) : null,
+    ...(round ? {
+      roundPrevisti: round, roundEseguiti: roundEseguiti(scheda, bozza),
+      compForza: completamentoPerEsercizio(scheda.elementi, bozza.stato.map((e) => e.serie))
+    } : {}),
     regolaCardio: cardio ? 2 : null,
     cardioMin: cardio ? valori.cardioMin ?? null : null,
     zonaMin: cardio ? valori.zonaMin ?? null : null,
@@ -86,7 +102,7 @@ export function componiSessione(scheda, bozza, valori) {
     rpe: valori.rpe ?? null,
     dettaglio: scheda.elementi.map((e, i) => (e.k === "forza"
       ? {
-        k: e.k, nome: e.nome,
+        k: e.k, nome: e.nome, ...(aTempo(e) ? { modo: e.modo, lavoro: e.lavoro } : {}),
         serie: bozza.stato[i].serie.map((s) => ({ rip: num(s.rip), kg: num(s.kg), fatta: s.fatta }))
       }
       : { k: e.k, nome: e.nome, fatto: bozza.stato[i].fatto }))

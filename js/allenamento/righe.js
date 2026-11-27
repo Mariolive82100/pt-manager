@@ -1,7 +1,7 @@
 // Editor di esercizi e blocchi cardio
 import { $, crea } from "../core/ui.js";
 import {
-  ZONE, testoZona, percentualeDaCarico, caricoDaPercentuale, minutiElemento
+  ZONE, testoZona, percentualeDaCarico, caricoDaPercentuale, minutiElemento, aTempo
 } from "../core/calcoli-allenamento.js";
 import { MASSIMALI } from "../core/calcoli-misure.js";
 import { BLOCCHI_CARDIO } from "../core/esercizi-base.js";
@@ -54,6 +54,27 @@ function sceltaEsercizio(e) {
   return select;
 }
 
+function sceltaModo(e) {
+  const select = crea("select", { className: "input", name: "modo" },
+    crea("option", { value: "", textContent: "Ripetizioni" }),
+    crea("option", { value: "tempo", textContent: "A tempo" }));
+  select.value = aTempo(e) ? "tempo" : "";
+  select.addEventListener("change", () => {
+    if (select.value === "tempo") {
+      e.modo = "tempo";
+      e.lavoro ??= 40;
+      e.rip = null; // l'obiettivo è facoltativo
+    } else {
+      delete e.modo;
+      delete e.lavoro;
+      e.rip ||= 10;
+    }
+    disegnaRighe();
+    alCambio();
+  });
+  return select;
+}
+
 function campiForza(e) {
   const max = massimale(e.rm);
   const pct = crea("input", {
@@ -76,8 +97,10 @@ function campiForza(e) {
     nota = `Manca il massimale ${nome}: inseriscilo nelle Misurazioni.`;
   }
   return [
-    campo("Serie", inputNumero(e, "serie", 1, 30, 1)),
-    campo("Rip.", inputNumero(e, "rip", 1, 200, 1)),
+    campo("Modalità", sceltaModo(e)),
+    campo(aTempo(e) ? "Round" : "Serie", inputNumero(e, "serie", 1, 30, 1)),
+    aTempo(e) ? campo("Lavoro s", inputNumero(e, "lavoro", 1, 3600, 1)) : null,
+    campo(aTempo(e) ? "Rip. obiettivo" : "Rip.", inputNumero(e, "rip", 1, 200, 1)),
     campo("Carico kg", kg),
     campo("% 1RM", pct),
     campo("Recupero s", inputNumero(e, "recupero", 0, 900, 5)),
