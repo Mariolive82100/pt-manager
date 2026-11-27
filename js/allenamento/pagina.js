@@ -7,6 +7,7 @@ import { TIPI, isoLocale } from "../core/calcoli-allenamento.js";
 import { livelloEffettivo, nomeLivello } from "../core/calcoli.js";
 import { testoErrore } from "../core/errori.js";
 import "../core/versione.js";
+import { DATI_SANITARI } from "../core/funzioni.js";
 import { st, elementi, nuovoForza, nuovoCardio, haCardio } from "./stato.js";
 import { avviaRighe, disegnaRighe, disegnaStriscia } from "./righe.js";
 import { avviaDialogoEsercizi, apriEsercizi, caricaEsercizi } from "./esercizi-dialogo.js";
@@ -62,7 +63,7 @@ function aggiorna() {
     ? "Ritira e salva come bozza" : "Salva come bozza";
   $("btn-salva").textContent = piano() ? "Assegna a " + primoNome() : "Aggiungi allo storico";
   // In pianificazione si salva solo dopo aver mostrato le note sanitarie
-  const bloccato = salvataggio || (piano() && !noteLette());
+  const bloccato = salvataggio || (DATI_SANITARI && piano() && !noteLette());
   $("btn-salva").disabled = bloccato;
   $("btn-bozza").disabled = bloccato;
   if (piano()) { aggiornaRiepilogoPiano(); disegnaStriscia(); }
@@ -97,7 +98,7 @@ function scegliAtleta(id, idScheda = "") {
   $("f-atleta").value = id;
   $("torna").href = "trainer.html#atleta=" + encodeURIComponent(id);
   $("annulla").href = $("torna").href;
-  caricaNoteSanitarie();
+  if (DATI_SANITARI) caricaNoteSanitarie();
   schedeCaricatePer = null;
   if (!piano()) {
     schedeCaricatePer = id;
@@ -173,7 +174,10 @@ async function salva(statoScheda) {
 function collega() {
   avviaRighe({ alCambio: cambiata, alNuovoEsercizio: apriEsercizi });
   avviaDialogoEsercizi(disegnaRighe);
-  avviaNoteSanitarie(aggiorna);
+  if (DATI_SANITARI) {
+    $("box-sanitarie").hidden = false;
+    avviaNoteSanitarie(aggiorna);
+  }
   avviaPianifica(cambiata);
   avviaRegistrazione({ alCambio: cambiata, alCambioScheda: usaScheda });
 
@@ -209,7 +213,8 @@ async function preparaCopia(idAtleta, idCopia) {
   document.querySelector("[name=modo][value=registra]").disabled = true;
   $("avviso-copia").textContent = `Copia di "${origine.nome}" del ` +
     `${origine.data.split("-").reverse().join("/")}. Non è ancora salvata: controlla data, ` +
-    "carichi, note per l'atleta e note sanitarie, poi assegnala o salvala come bozza.";
+    `carichi${DATI_SANITARI ? ", note per l'atleta e note sanitarie" : " e note per l'atleta"}, ` +
+    "poi assegnala o salvala come bozza.";
   $("avviso-copia").hidden = false;
 }
 

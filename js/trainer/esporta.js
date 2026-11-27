@@ -8,7 +8,7 @@ let atleta = null;
 let indirizzi = [];
 let richiesta = 0;
 
-// Toglie dalla memoria i file preparati (contengono dati sanitari)
+// Toglie dalla memoria i file preparati (contengono dati personali)
 export function azzeraEsporta(scelto = null) {
   atleta = scelto;
   richiesta += 1;
@@ -43,7 +43,7 @@ export function avviaEsporta({ testoErrore }) {
       collega("esporta-json", JSON.stringify(dati, null, 2), "application/json", base + ".json");
       $("esporta-file").hidden = false;
       $("esporta-stato").textContent =
-        "File pronti. Contengono dati sanitari: consegnali in modo sicuro e poi cancellali da questo computer (anche dal cestino).";
+        "File pronti. Contengono dati personali: consegnali in modo sicuro e poi cancellali da questo computer (anche dal cestino).";
       $("esporta-stato").className = "avviso";
     } catch (e) {
       console.error(e);

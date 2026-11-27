@@ -1,13 +1,13 @@
-// Testo dell'informativa. Se cambia, aumentare VERSIONE: l'app richiede di nuovo il consenso
+// Testo dell'informativa (versione senza note sanitarie). Se cambia, aumentare VERSIONE: l'app richiede di nuovo il consenso
 import { crea } from "../core/ui.js";
 import { TITOLARE } from "../core/titolare.js";
 
-export const VERSIONE_INFORMATIVA = "bozza-2";
+export const VERSIONE_INFORMATIVA = "bozza-3";
 
 const SEZIONI = [
   ["Chi tratta i dati", `Titolare del trattamento: ${TITOLARE.nome}. Contatto: ${TITOLARE.contatto}. Un eventuale assistente tecnico può accedere ai dati solo se autorizzato dal titolare.`],
-  ["Quali dati", "Nome, data di nascita, sesso, email, foto tessera (facoltativa), obiettivo, misure del corpo, frequenza cardiaca, massimali, test fisici, allenamenti svolti e fatica percepita. Dati sulla salute: traumi, interventi e patologie."],
-  ["Perché", "Per preparare e seguire i tuoi allenamenti tenendo conto delle tue condizioni fisiche. La base giuridica, compreso il tuo consenso esplicito per i dati sulla salute, è in corso di verifica."],
+  ["Quali dati", "Nome, data di nascita, sesso, email, foto tessera (facoltativa), obiettivo, misure del corpo, frequenza cardiaca, massimali, test fisici, allenamenti svolti e fatica percepita. L'app non chiede traumi, interventi o patologie: non vanno scritti nei campi liberi."],
+  ["Perché", "Per preparare e seguire i tuoi allenamenti. La base giuridica è in corso di verifica."],
   ["Chi può vederli", "Tu e il tuo personal trainer. La foto nell'app la vede solo il trainer. Gli altri atleti non vedono i tuoi dati."],
   ["Dove sono conservati", "Il database è su Google Firebase, nella regione di Milano. Il servizio di accesso di Google può trattare dati, come l'email, anche fuori dall'Unione europea. I file dell'app sono pubblicati su GitHub, che riceve dati tecnici di connessione come l'indirizzo IP."],
   ["Sul tuo telefono", "Durante un allenamento l'app salva temporaneamente solo ora di inizio, serie, ripetizioni, carichi e blocchi svolti. La copia si cancella dopo l'invio o quando esci."],

@@ -67,9 +67,9 @@ export function componiHtml(dati) {
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'">
 <title>Dati di ${nome}</title><style>${STILE}</style></head><body>
 <h1>P.T. Manager · Dati di ${nome}</h1>
-<p><strong>Documento riservato: contiene dati sulla salute.</strong> Esportato il ${pulisci(dati.esportatoIl)}. Codice atleta: ${pulisci(dati.codiceAtleta)}.</p>
+<p><strong>Documento riservato: contiene dati personali${dati.noteSanitarie?.length ? ", anche sulla salute" : ""}.</strong> Esportato il ${pulisci(dati.esportatoIl)}. Codice atleta: ${pulisci(dati.codiceAtleta)}.</p>
 ${foto}
-${SEZIONI.map(([k, titolo]) => `<h2>${titolo}</h2>${valore(dati[k])}`).join("\n")}
+${SEZIONI.filter(([k]) => k !== "noteSanitarie" || dati[k]?.length).map(([k, titolo]) => `<h2>${titolo}</h2>${valore(dati[k])}`).join("\n")}
 </body></html>
 `;
 }

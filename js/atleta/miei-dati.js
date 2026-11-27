@@ -1,6 +1,7 @@
 // I miei dati: note sanitarie e misurazioni in sola lettura
 import { $, crea } from "../core/ui.js";
 import { elencaNote } from "../core/db-salute.js";
+import { DATI_SANITARI } from "../core/funzioni.js";
 import { elencaMisure } from "../core/db-misure.js";
 import { CORPO, MASSIMALI, bmi } from "../core/calcoli-misure.js";
 import { dataItaliana } from "./oggi.js";
@@ -49,7 +50,8 @@ async function sezione(id, mia, leggi, disegna, errore) {
 export function mostraMieiDati(atleta) {
   const mia = ++richiesta;
   disegnaValori(atleta);
-  sezione("mie-note", mia, () => elencaNote(atleta.id), (note) => {
+  $("box-mie-note").hidden = !DATI_SANITARI;
+  if (DATI_SANITARI) sezione("mie-note", mia, () => elencaNote(atleta.id), (note) => {
     if (!note.length) return [testo("Nessuna segnalazione registrata.")];
     return GRUPPI.flatMap(([tipo, titolo]) => {
       const voci = note.filter((n) => n.tipo === tipo);

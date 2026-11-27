@@ -100,7 +100,7 @@
             <label class="field"><span class="kicker">4 · Note per l'atleta</span>
               <textarea id="f-note" class="input" maxlength="2000" placeholder="Es. tecnica, tempi di esecuzione, cosa evitare…"></textarea>
             </label>
-            <span class="muted">L'atleta le leggerà: non riportare qui annotazioni sanitarie riservate.</span>
+            <span class="muted">L'atleta le leggerà: non scrivere informazioni sulla salute.</span>
           </section>
         </div>
 
@@ -129,7 +129,7 @@
       </fieldset>
 
       <aside class="colonna-lato">
-        <section class="card sanitarie" aria-live="polite">
+        <section id="box-sanitarie" class="card sanitarie" aria-live="polite" hidden>
           <span id="sanitarie-titolo" class="kicker">Note sanitarie</span>
           <div id="sanitarie-lista" class="sanitarie-lista"></div>
           <button type="button" id="btn-sanitarie-riprova" class="btn" hidden>Riprova</button>

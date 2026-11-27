@@ -1,5 +1,6 @@
 // Scheda Misurazioni: caricamento, modulo e salvataggio
 import { $, avviso } from "../core/ui.js";
+import { DATI_SANITARI } from "../core/funzioni.js";
 import { elencaMisure, salvaMisura, eliminaMisura, MASSIMO_MISURE } from "../core/db-misure.js";
 import { CORPO, MASSIMALI } from "../core/calcoli-misure.js";
 import { disegnaStorico, disegnaMassimali, dataItaliana } from "./misure-vista.js";
@@ -15,6 +16,8 @@ let visibile = false;
 let opzioni = {};
 
 const campo = (nome) => $("form-misura").elements.namedItem(nome);
+// Il consenso scritto è richiesto solo con i dati sanitari attivi
+const manca = () => DATI_SANITARI && !atleta.consensoScritto;
 
 function chiudiForm() {
   inModifica = null;
@@ -23,7 +26,7 @@ function chiudiForm() {
 }
 
 function apriForm(voce) {
-  if (!atleta.consensoScritto) return;
+  if (manca()) return;
   inModifica = voce?.id ?? null;
   $("form-misura").reset();
   $("titolo-misura").textContent = voce ? "Modifica rilevazione" : "Nuova rilevazione";
@@ -38,7 +41,7 @@ function apriForm(voce) {
 
 export function disegnaMisure() {
   if (!atleta) return;
-  const bloccata = !atleta.consensoScritto;
+  const bloccata = manca();
   $("misure-blocco").hidden = !bloccata;
   if (bloccata) chiudiForm();
   $("btn-nuova-misura").disabled = bloccata || misure === null;
@@ -120,7 +123,7 @@ export function avviaMisure(impostazioni) {
 
   $("form-misura").addEventListener("submit", (ev) => {
     ev.preventDefault();
-    if (!atleta.consensoScritto) return;
+    if (manca()) return;
     const dati = { data: campo("data").value };
     CAMPI.forEach((n) => { dati[n] = campo(n).value === "" ? null : Number(campo(n).value); });
     if (CAMPI.every((n) => dati[n] === null)) {

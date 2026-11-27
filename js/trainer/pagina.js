@@ -7,6 +7,7 @@ import {
   eta, anniAllenamento, livelloCalcolato, livelloEffettivo, nomeLivello
 } from "../core/calcoli.js";
 import { avviaElenco, aggiornaElenco } from "./elenco.js";
+import { DATI_SANITARI } from "../core/funzioni.js";
 import { avviaForm, compilaForm } from "./atleta-form.js";
 import "../core/versione.js";
 import { avviaSchede } from "./schede.js";
@@ -76,7 +77,7 @@ function apri(id) {
   azzeraEsporta(atleta);
   if (!atleta) return mostra("vuoto");
   disegnaProfilo(atleta);
-  mostraSalute(atleta);
+  if (DATI_SANITARI) mostraSalute(atleta);
   mostraConsensoApp(atleta.id);
   mostraMisure(atleta);
   mostraLivello(atleta);
@@ -132,7 +133,7 @@ async function copiaLink() {
 avviaElenco(apri);
 avviaAllenamenti({ testoErrore, alRiepilogo: () => aggiornaElenco(atleti, scelto) });
 avviaMisure({ testoErrore, alAggiornato: disegnaProfilo });
-avviaSalute({ testoErrore, alConsenso: disegnaMisure });
+if (DATI_SANITARI) avviaSalute({ testoErrore, alConsenso: disegnaMisure });
 avviaLivello({
   testoErrore,
   alModificaDati: () => apriForm(scelto),
